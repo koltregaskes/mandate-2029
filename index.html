@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UK Democracy Simulator - Governing Britain</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="main-header">
+            <div class="header-left">
+                <div class="uk-emblem">🇬🇧</div>
+                <div class="header-info">
+                    <h1>UK Democracy Simulator</h1>
+                    <div class="current-date" id="currentDate">June 2025</div>
+                </div>
+            </div>
+            <div class="header-center">
+                <div class="pm-info">
+                    <div class="pm-name">Prime Minister: Keir Starmer</div>
+                    <div class="party-info">Labour Government</div>
+                </div>
+            </div>
+            <div class="header-right">
+                <div class="election-countdown">
+                    <div class="countdown-label">Next General Election</div>
+                    <div class="countdown-value" id="electionCountdown">50 months</div>
+                </div>
+                <div class="approval-rating">
+                    <div class="approval-label">Approval Rating</div>
+                    <div class="approval-value" id="approvalRating">42%</div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Left Panel - Policies -->
+            <aside class="left-panel">
+                <div class="panel-header">
+                    <h2>Government Departments</h2>
+                    <div class="political-capital">
+                        <span class="pc-label">Political Capital:</span>
+                        <span class="pc-value" id="politicalCapital">75</span>
+                    </div>
+                </div>
+                
+                <div class="department-section">
+                    <h3>Health & Social Care</h3>
+                    <div class="secretary-info">Secretary: Wes Streeting</div>
+                    <div class="policy-item">
+                        <label for="nhsFunding">NHS Funding</label>
+                        <input type="range" id="nhsFunding" min="0" max="100" value="50" class="policy-slider">
+                        <span class="policy-value">£215.6bn</span>
+                        <span class="policy-cost">Cost: 8 PC</span>
+                    </div>
+                    <div class="policy-item">
+                        <label for="socialCare">Social Care Funding</label>
+                        <input type="range" id="socialCare" min="0" max="100" value="40" class="policy-slider">
+                        <span class="policy-value">Medium</span>
+                        <span class="policy-cost">Cost: 6 PC</span>
+                    </div>
+                </div>
+
+                <div class="department-section">
+                    <h3>Education</h3>
+                    <div class="secretary-info">Secretary: Bridget Phillipson</div>
+                    <div class="policy-item">
+                        <label for="schoolFunding">School Funding</label>
+                        <input type="range" id="schoolFunding" min="0" max="100" value="55" class="policy-slider">
+                        <span class="policy-value">£59.6bn</span>
+                        <span class="policy-cost">Cost: 7 PC</span>
+                    </div>
+                    <div class="policy-item">
+                        <label for="higherEd">Higher Education</label>
+                        <input type="range" id="higherEd" min="0" max="100" value="45" class="policy-slider">
+                        <span class="policy-value">Medium</span>
+                        <span class="policy-cost">Cost: 5 PC</span>
+                    </div>
+                </div>
+
+                <div class="department-section">
+                    <h3>Treasury</h3>
+                    <div class="secretary-info">Chancellor: Rachel Reeves</div>
+                    <div class="policy-item">
+                        <label for="incomeTax">Income Tax Rate</label>
+                        <input type="range" id="incomeTax" min="15" max="50" value="20" class="policy-slider">
+                        <span class="policy-value">20%</span>
+                        <span class="policy-cost">Cost: 12 PC</span>
+                    </div>
+                    <div class="policy-item">
+                        <label for="corporationTax">Corporation Tax</label>
+                        <input type="range" id="corporationTax" min="15" max="35" value="25" class="policy-slider">
+                        <span class="policy-value">25%</span>
+                        <span class="policy-cost">Cost: 10 PC</span>
+                    </div>
+                </div>
+
+                <div class="department-section">
+                    <h3>Home Office</h3>
+                    <div class="secretary-info">Secretary: Yvette Cooper</div>
+                    <div class="policy-item">
+                        <label for="policeFunding">Police Funding</label>
+                        <input type="range" id="policeFunding" min="0" max="100" value="60" class="policy-slider">
+                        <span class="policy-value">High</span>
+                        <span class="policy-cost">Cost: 8 PC</span>
+                    </div>
+                    <div class="policy-item">
+                        <label for="immigration">Immigration Control</label>
+                        <input type="range" id="immigration" min="0" max="100" value="30" class="policy-slider">
+                        <span class="policy-value">Moderate</span>
+                        <span class="policy-cost">Cost: 15 PC</span>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Center Panel - Map and Events -->
+            <section class="center-panel">
+                <div class="uk-map-container">
+                    <h2>Regional Support</h2>
+                    <div class="uk-map">
+                        <div class="region scotland" data-region="Scotland">
+                            <span class="region-name">Scotland</span>
+                            <span class="support-level">35%</span>
+                        </div>
+                        <div class="region northern-england" data-region="Northern England">
+                            <span class="region-name">North</span>
+                            <span class="support-level">52%</span>
+                        </div>
+                        <div class="region midlands" data-region="Midlands">
+                            <span class="region-name">Midlands</span>
+                            <span class="support-level">48%</span>
+                        </div>
+                        <div class="region wales" data-region="Wales">
+                            <span class="region-name">Wales</span>
+                            <span class="support-level">45%</span>
+                        </div>
+                        <div class="region london" data-region="London">
+                            <span class="region-name">London</span>
+                            <span class="support-level">58%</span>
+                        </div>
+                        <div class="region south" data-region="South">
+                            <span class="region-name">South</span>
+                            <span class="support-level">38%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="events-feed">
+                    <h2>Current Events</h2>
+                    <div class="events-list" id="eventsList">
+                        <div class="event-item">
+                            <div class="event-title">NHS Winter Pressures</div>
+                            <div class="event-description">Hospital waiting times reach record highs amid staff shortages</div>
+                            <div class="event-impact">Impact: Health approval -5%</div>
+                        </div>
+                        <div class="event-item">
+                            <div class="event-title">Economic Growth</div>
+                            <div class="event-description">GDP growth exceeds expectations at 2.1%</div>
+                            <div class="event-impact">Impact: Overall approval +3%</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="implementation-queue">
+                    <h2>Policy Implementation Queue</h2>
+                    <div class="queue-list" id="implementationQueue">
+                        <div class="queue-item">
+                            <div class="queue-policy">NHS Funding Increase</div>
+                            <div class="queue-progress">
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 60%"></div>
+                                </div>
+                                <span class="progress-text">2 months remaining</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Right Panel - Metrics and Cabinet -->
+            <aside class="right-panel">
+                <div class="voter-groups">
+                    <h2>Voter Group Approval</h2>
+                    <div class="voter-group">
+                        <div class="group-name">Labour Supporters (34%)</div>
+                        <div class="approval-bar">
+                            <div class="approval-fill" style="width: 75%"></div>
+                            <span class="approval-text">75%</span>
+                        </div>
+                    </div>
+                    <div class="voter-group">
+                        <div class="group-name">Conservative Supporters (24%)</div>
+                        <div class="approval-bar">
+                            <div class="approval-fill" style="width: 18%"></div>
+                            <span class="approval-text">18%</span>
+                        </div>
+                    </div>
+                    <div class="voter-group">
+                        <div class="group-name">LibDem Supporters (12%)</div>
+                        <div class="approval-bar">
+                            <div class="approval-fill" style="width: 45%"></div>
+                            <span class="approval-text">45%</span>
+                        </div>
+                    </div>
+                    <div class="voter-group">
+                        <div class="group-name">Reform Supporters (14%)</div>
+                        <div class="approval-bar">
+                            <div class="approval-fill" style="width: 12%"></div>
+                            <span class="approval-text">12%</span>
+                        </div>
+                    </div>
+                    <div class="voter-group">
+                        <div class="group-name">Green Supporters (7%)</div>
+                        <div class="approval-bar">
+                            <div class="approval-fill" style="width: 55%"></div>
+                            <span class="approval-text">55%</span>
+                        </div>
+                    </div>
+                    <div class="voter-group">
+                        <div class="group-name">Floating Voters (9%)</div>
+                        <div class="approval-bar">
+                            <div class="approval-fill" style="width: 38%"></div>
+                            <span class="approval-text">38%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="performance-metrics">
+                    <h2>Performance Metrics</h2>
+                    <div class="metric-item">
+                        <span class="metric-name">NHS Waiting Times</span>
+                        <span class="metric-value status--warning">18 weeks</span>
+                    </div>
+                    <div class="metric-item">
+                        <span class="metric-name">Education Standards</span>
+                        <span class="metric-value status--success">Good</span>
+                    </div>
+                    <div class="metric-item">
+                        <span class="metric-name">Crime Rate</span>
+                        <span class="metric-value status--info">Stable</span>
+                    </div>
+                    <div class="metric-item">
+                        <span class="metric-name">GDP Growth</span>
+                        <span class="metric-value status--success">2.1%</span>
+                    </div>
+                    <div class="metric-item">
+                        <span class="metric-name">Unemployment</span>
+                        <span class="metric-value status--success">4.2%</span>
+                    </div>
+                    <div class="metric-item">
+                        <span class="metric-name">Climate Progress</span>
+                        <span class="metric-value status--warning">Behind Target</span>
+                    </div>
+                </div>
+
+                <div class="cabinet-info">
+                    <h2>Cabinet Ministers</h2>
+                    <div class="minister-item">
+                        <span class="minister-name">Wes Streeting</span>
+                        <span class="minister-role">Health Secretary</span>
+                        <span class="minister-loyalty status--success">Loyal</span>
+                    </div>
+                    <div class="minister-item">
+                        <span class="minister-name">Rachel Reeves</span>
+                        <span class="minister-role">Chancellor</span>
+                        <span class="minister-loyalty status--success">Loyal</span>
+                    </div>
+                    <div class="minister-item">
+                        <span class="minister-name">Yvette Cooper</span>
+                        <span class="minister-role">Home Secretary</span>
+                        <span class="minister-loyalty status--info">Neutral</span>
+                    </div>
+                </div>
+            </aside>
+        </main>
+
+        <!-- Footer -->
+        <footer class="main-footer">
+            <div class="footer-left">
+                <div class="session-info">Parliamentary Session: 2024-2029</div>
+                <div class="majority-info">Labour Majority: 176 seats</div>
+            </div>
+            <div class="footer-center">
+                <button class="btn btn--primary btn--lg" id="nextTurnBtn">Next Turn (Advance 1 Month)</button>
+            </div>
+            <div class="footer-right">
+                <div class="emergency-powers">
+                    <span class="emergency-label">Emergency Powers:</span>
+                    <span class="emergency-status" id="emergencyStatus">Inactive</span>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
