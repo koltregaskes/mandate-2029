@@ -265,7 +265,9 @@ class UKDemocracySimulator {
                 break;
         }
 
-        this.gameState.policies[policyId] = parseInt(value);
+        // Don't modify the actual policy values yet.  The change will be
+        // processed at the start of the next turn so we can deduct
+        // Political Capital correctly.  Only update the displayed cost/values.
         this.updatePolicyCosts();
     }
 
@@ -317,6 +319,9 @@ class UKDemocracySimulator {
         // Update display
         this.updateDisplay();
 
+        // Recalculate cost labels for new baseline values
+        this.updatePolicyCosts();
+
         // Check for special conditions
         this.checkSpecialConditions();
     }
@@ -341,8 +346,9 @@ class UKDemocracySimulator {
                     // Add to implementation queue
                     this.addToImplementationQueue(policyId, newValue, change);
                 } else {
-                    // Revert slider if not enough PC
+                    // Revert slider if not enough PC and refresh displayed value
                     slider.value = currentValue;
+                    this.updatePolicyValue(policyId, currentValue);
                     this.showMessage('Not enough Political Capital for this change!', 'error');
                 }
             }
