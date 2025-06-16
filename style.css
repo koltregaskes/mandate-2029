@@ -660,11 +660,11 @@ select.form-control {
   min-height: 100vh;
   display: grid;
   grid-template-rows: auto 1fr auto;
-  grid-template-areas: 
+  grid-template-areas:
     "header"
     "main"
     "footer";
-  background-color: var(--color-background);
+  background: linear-gradient(to bottom, var(--color-background), #f0f4f7);
 }
 
 /* Header Styles */
