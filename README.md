@@ -1,1 +1,28 @@
-# political-sim-test
+# Mandate 2029
+
+Narrative-heavy political strategy prototype about governing Britain through crisis, reform, and election season.
+
+## Run locally
+
+Start a static server in this folder, then open `http://localhost:8011`.
+
+```bash
+python -m http.server 8011
+```
+
+## How to play
+
+- Adjust department sliders to set policy direction.
+- Respond to monthly crisis events with political judgement, not just budget maths.
+- Expect crisis events to react to the calendar, the scenario, and the condition of the country.
+- Use `New Scenario` to swap between different starting governments and difficulty levels.
+- Press `Next Turn` to advance one month.
+- Watch approval, government stability, implementation queue, and election outlook.
+- Use the regional swingboard to spot strongholds, vulnerable territory, and rough seat paths.
+- Save progress locally or reset for a fresh government at any time.
+
+## Controls
+
+- Mouse or touch: change policies and trigger actions
+- `?`: open the help and controls briefing
+- `Esc`: close the help briefing

@@ -3,17 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>UK Democracy Simulator - Governing Britain</title>
+    <title>Mandate 2029 - Governing Britain</title>
+    <link rel="icon" href="data:,">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="app-container">
-        <!-- Header -->
         <header class="main-header">
             <div class="header-left">
-                <div class="uk-emblem">🇬🇧</div>
+                <div class="uk-emblem">GB</div>
                 <div class="header-info">
-                    <h1>UK Democracy Simulator</h1>
+                    <h1>Mandate 2029</h1>
                     <div class="current-date" id="currentDate">June 2025</div>
                 </div>
             </div>
@@ -21,6 +21,10 @@
                 <div class="pm-info">
                     <div class="pm-name">Prime Minister: Keir Starmer</div>
                     <div class="party-info">Labour Government</div>
+                    <div class="campaign-tags">
+                        <span class="campaign-tag" id="scenarioTag">Fresh Majority</span>
+                        <span class="campaign-tag campaign-tag--muted" id="difficultyTag">Normal</span>
+                    </div>
                 </div>
             </div>
             <div class="header-right">
@@ -35,9 +39,7 @@
             </div>
         </header>
 
-        <!-- Main Content -->
         <main class="main-content">
-            <!-- Left Panel - Policies -->
             <aside class="left-panel">
                 <div class="panel-header">
                     <h2>Government Departments</h2>
@@ -46,9 +48,9 @@
                         <span class="pc-value" id="politicalCapital">75</span>
                     </div>
                 </div>
-                
+
                 <div class="department-section">
-                    <h3>Health & Social Care</h3>
+                    <h3>Health &amp; Social Care</h3>
                     <div class="secretary-info">Secretary: Wes Streeting</div>
                     <div class="policy-item">
                         <label for="nhsFunding">NHS Funding</label>
@@ -116,71 +118,94 @@
                 </div>
             </aside>
 
-            <!-- Center Panel - Map and Events -->
             <section class="center-panel">
+                <div class="briefing-panel">
+                    <div class="briefing-header">
+                        <div>
+                            <h2>Prime Minister's Briefing</h2>
+                            <div class="briefing-subtitle">Your latest internal update from Downing Street.</div>
+                        </div>
+                        <span class="briefing-badge" id="gameStatusBadge">In Office</span>
+                    </div>
+                    <p class="briefing-summary" id="turnSummary">
+                        Your government has just taken office. Choose where to spend your political capital and shape the next election.
+                    </p>
+                    <div class="briefing-grid">
+                        <div class="briefing-stat">
+                            <span class="briefing-label">Government Stability</span>
+                            <strong id="governmentStability">64</strong>
+                        </div>
+                        <div class="briefing-stat">
+                            <span class="briefing-label">Election Outlook</span>
+                            <strong id="electionOutlook">Narrow lead</strong>
+                        </div>
+                        <div class="briefing-stat">
+                            <span class="briefing-label">Legacy Score</span>
+                            <strong id="legacyScore">54</strong>
+                        </div>
+                        <div class="briefing-stat">
+                            <span class="briefing-label">Projected Seats</span>
+                            <strong id="projectedSeatsLive">228</strong>
+                        </div>
+                    </div>
+                    <div class="briefing-actions">
+                        <button class="btn btn--outline btn--sm" id="helpBtn">How To Play</button>
+                        <button class="btn btn--outline btn--sm" id="saveGameBtn">Save Progress</button>
+                        <button class="btn btn--secondary btn--sm" id="resetGameBtn">New Scenario</button>
+                    </div>
+                </div>
+
+                <div class="strategy-dashboard">
+                    <section class="agenda-panel">
+                        <div class="section-header">
+                            <div>
+                                <h2>Government Agenda</h2>
+                                <p class="section-subtitle">Three missions that define the rest of this parliament.</p>
+                            </div>
+                        </div>
+                        <div class="agenda-list" id="governmentAgenda"></div>
+                    </section>
+
+                    <section class="polling-panel">
+                        <div class="section-header">
+                            <div>
+                                <h2>Polling History</h2>
+                                <p class="section-subtitle">Track the monthly drift in approval and seat projection.</p>
+                            </div>
+                        </div>
+                        <div class="poll-history" id="pollHistory"></div>
+                    </section>
+                </div>
+
                 <div class="uk-map-container">
                     <h2>Regional Support</h2>
-                    <div class="uk-map">
-                        <div class="region scotland" data-region="Scotland">
-                            <span class="region-name">Scotland</span>
-                            <span class="support-level">35%</span>
-                        </div>
-                        <div class="region northern-england" data-region="Northern England">
-                            <span class="region-name">North</span>
-                            <span class="support-level">52%</span>
-                        </div>
-                        <div class="region midlands" data-region="Midlands">
-                            <span class="region-name">Midlands</span>
-                            <span class="support-level">48%</span>
-                        </div>
-                        <div class="region wales" data-region="Wales">
-                            <span class="region-name">Wales</span>
-                            <span class="support-level">45%</span>
-                        </div>
-                        <div class="region london" data-region="London">
-                            <span class="region-name">London</span>
-                            <span class="support-level">58%</span>
-                        </div>
-                        <div class="region south" data-region="South">
-                            <span class="region-name">South</span>
-                            <span class="support-level">38%</span>
-                        </div>
+                    <div class="regional-overview">
+                        <div class="uk-map" id="regionalMap" aria-label="Regional support map"></div>
+                        <div class="regional-support-list" id="regionalSupportList"></div>
                     </div>
                 </div>
 
                 <div class="events-feed">
                     <h2>Current Events</h2>
-                    <div class="events-list" id="eventsList">
-                        <div class="event-item">
-                            <div class="event-title">NHS Winter Pressures</div>
-                            <div class="event-description">Hospital waiting times reach record highs amid staff shortages</div>
-                            <div class="event-impact">Impact: Health approval -5%</div>
-                        </div>
-                        <div class="event-item">
-                            <div class="event-title">Economic Growth</div>
-                            <div class="event-description">GDP growth exceeds expectations at 2.1%</div>
-                            <div class="event-impact">Impact: Overall approval +3%</div>
-                        </div>
-                    </div>
+                    <div class="events-list" id="eventsList"></div>
                 </div>
 
                 <div class="implementation-queue">
                     <h2>Policy Implementation Queue</h2>
-                    <div class="queue-list" id="implementationQueue">
-                        <div class="queue-item">
-                            <div class="queue-policy">NHS Funding Increase</div>
-                            <div class="queue-progress">
-                                <div class="progress-bar">
-                                    <div class="progress-fill" style="width: 60%"></div>
-                                </div>
-                                <span class="progress-text">2 months remaining</span>
-                            </div>
+                    <div class="queue-list" id="implementationQueue"></div>
+                </div>
+
+                <div class="election-ledger">
+                    <div class="section-header">
+                        <div>
+                            <h2>Election Ledger</h2>
+                            <p class="section-subtitle">Key decisions, shocks, and delivery milestones shaping your final result.</p>
                         </div>
                     </div>
+                    <div class="ledger-list" id="electionLedger"></div>
                 </div>
             </section>
 
-            <!-- Right Panel - Metrics and Cabinet -->
             <aside class="right-panel">
                 <div class="voter-groups">
                     <h2>Voter Group Approval</h2>
@@ -230,27 +255,27 @@
 
                 <div class="performance-metrics">
                     <h2>Performance Metrics</h2>
-                    <div class="metric-item">
+                    <div class="metric-item" id="metricNhsWaitingTimes">
                         <span class="metric-name">NHS Waiting Times</span>
                         <span class="metric-value status--warning">18 weeks</span>
                     </div>
-                    <div class="metric-item">
+                    <div class="metric-item" id="metricEducation">
                         <span class="metric-name">Education Standards</span>
                         <span class="metric-value status--success">Good</span>
                     </div>
-                    <div class="metric-item">
+                    <div class="metric-item" id="metricCrime">
                         <span class="metric-name">Crime Rate</span>
                         <span class="metric-value status--info">Stable</span>
                     </div>
-                    <div class="metric-item">
+                    <div class="metric-item" id="metricGdpGrowth">
                         <span class="metric-name">GDP Growth</span>
                         <span class="metric-value status--success">2.1%</span>
                     </div>
-                    <div class="metric-item">
+                    <div class="metric-item" id="metricUnemployment">
                         <span class="metric-name">Unemployment</span>
                         <span class="metric-value status--success">4.2%</span>
                     </div>
-                    <div class="metric-item">
+                    <div class="metric-item" id="metricClimate">
                         <span class="metric-name">Climate Progress</span>
                         <span class="metric-value status--warning">Behind Target</span>
                     </div>
@@ -258,26 +283,11 @@
 
                 <div class="cabinet-info">
                     <h2>Cabinet Ministers</h2>
-                    <div class="minister-item">
-                        <span class="minister-name">Wes Streeting</span>
-                        <span class="minister-role">Health Secretary</span>
-                        <span class="minister-loyalty status--success">Loyal</span>
-                    </div>
-                    <div class="minister-item">
-                        <span class="minister-name">Rachel Reeves</span>
-                        <span class="minister-role">Chancellor</span>
-                        <span class="minister-loyalty status--success">Loyal</span>
-                    </div>
-                    <div class="minister-item">
-                        <span class="minister-name">Yvette Cooper</span>
-                        <span class="minister-role">Home Secretary</span>
-                        <span class="minister-loyalty status--info">Neutral</span>
-                    </div>
+                    <div class="cabinet-list" id="cabinetList"></div>
                 </div>
             </aside>
         </main>
 
-        <!-- Footer -->
         <footer class="main-footer">
             <div class="footer-left">
                 <div class="session-info">Parliamentary Session: 2024-2029</div>
@@ -293,6 +303,101 @@
                 </div>
             </div>
         </footer>
+    </div>
+
+    <div class="modal-overlay hidden" id="electionModal">
+        <div class="modal-card">
+            <div class="modal-kicker">General Election Complete</div>
+            <h2 id="electionResultTitle">Election Result</h2>
+            <p id="electionResultSummary"></p>
+            <div class="election-result-grid">
+                <div class="election-result-stat">
+                    <span class="briefing-label">Projected Seats</span>
+                    <strong id="electionResultSeats">0</strong>
+                </div>
+                <div class="election-result-stat">
+                    <span class="briefing-label">Result</span>
+                    <strong id="electionResultOutcome">Hung Parliament</strong>
+                </div>
+                <div class="election-result-stat">
+                    <span class="briefing-label">Legacy Score</span>
+                    <strong id="electionResultLegacy">0</strong>
+                </div>
+            </div>
+            <button class="btn btn--primary btn--lg" id="restartGameBtn">Choose New Government</button>
+        </div>
+    </div>
+
+    <div class="modal-overlay hidden" id="eventModal">
+        <div class="modal-card modal-card--wide">
+            <div class="modal-kicker" id="eventCategory">Westminster Shock</div>
+            <h2 id="eventTitle">Crisis Event</h2>
+            <p id="eventDescription"></p>
+            <div class="event-response-summary" id="eventImpactSummary"></div>
+            <div class="event-choice-list" id="eventChoices"></div>
+        </div>
+    </div>
+
+    <div class="modal-overlay hidden" id="helpModal">
+        <div class="modal-card">
+            <div class="modal-kicker">Cabinet Briefing</div>
+            <h2>How To Play Mandate 2029</h2>
+            <p>Adjust department sliders, spend political capital carefully, and survive until the general election with your coalition, your approval, and your authority intact.</p>
+            <div class="election-result-grid">
+                <div class="election-result-stat">
+                    <span class="briefing-label">Core Loop</span>
+                    <strong>Set policy, advance one month, react to events.</strong>
+                </div>
+                <div class="election-result-stat">
+                    <span class="briefing-label">What Matters</span>
+                    <strong>Approval, stability, implementation queue, and election outlook.</strong>
+                </div>
+                <div class="election-result-stat">
+                    <span class="briefing-label">Controls</span>
+                    <strong>Use sliders to stage reforms, then press Next Turn.</strong>
+                </div>
+                <div class="election-result-stat">
+                    <span class="briefing-label">Winning</span>
+                    <strong>Reach election day with enough support to hold power.</strong>
+                </div>
+            </div>
+            <button class="btn btn--primary btn--lg" id="closeHelpBtn">Return to Briefing</button>
+        </div>
+    </div>
+
+    <div class="modal-overlay hidden" id="scenarioModal">
+        <div class="modal-card modal-card--wide">
+            <div class="modal-kicker">Campaign Setup</div>
+            <h2>Choose Your Government</h2>
+            <p>Pick the starting scenario and difficulty before swearing in the next administration.</p>
+            <div class="scenario-picker" id="scenarioPicker">
+                <button class="scenario-option" data-scenario="labour-2025" type="button">
+                    <strong>Fresh Majority</strong>
+                    <span>June 2025. Plenty of runway, high expectations, and goodwill that will not last.</span>
+                </button>
+                <button class="scenario-option" data-scenario="winter-crunch" type="button">
+                    <strong>Winter Crunch</strong>
+                    <span>Late 2026. The NHS is buckling, growth has slowed, and your caucus is losing patience.</span>
+                </button>
+                <button class="scenario-option" data-scenario="border-backlash" type="button">
+                    <strong>Border Backlash</strong>
+                    <span>Spring 2027. The economy is holding, but migration and authority dominate every headline.</span>
+                </button>
+            </div>
+            <div class="difficulty-picker">
+                <span class="difficulty-label">Difficulty</span>
+                <div class="difficulty-options" id="difficultyOptions">
+                    <button class="difficulty-option" data-difficulty="easy" type="button">Easy</button>
+                    <button class="difficulty-option" data-difficulty="normal" type="button">Normal</button>
+                    <button class="difficulty-option" data-difficulty="hard" type="button">Hard</button>
+                    <button class="difficulty-option" data-difficulty="nightmare" type="button">Nightmare</button>
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn--outline btn--sm" id="scenarioCancelBtn">Cancel</button>
+                <button class="btn btn--primary btn--lg" id="scenarioConfirmBtn">Start Scenario</button>
+            </div>
+        </div>
     </div>
 
     <script src="app.js"></script>
