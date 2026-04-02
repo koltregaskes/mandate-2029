@@ -1,7 +1,7 @@
 class UKDemocracySimulator {
     constructor() {
-        this.storageKey = 'uk-democracy-simulator-state-v3';
-        this.legacyStorageKeys = ['uk-democracy-simulator-state-v2', 'uk-democracy-simulator-state'];
+        this.storageKey = 'uk-democracy-simulator-state-v4';
+        this.legacyStorageKeys = ['uk-democracy-simulator-state-v3', 'uk-democracy-simulator-state-v2', 'uk-democracy-simulator-state'];
         this.helpSeenKey = 'mandate-2029-help-seen';
         this.voterGroups = {
             'Labour Supporters': 34,
@@ -1108,7 +1108,7 @@ class UKDemocracySimulator {
         };
 
         return {
-            version: 3,
+            version: 4,
             scenarioId,
             difficulty,
             scenarioName: scenario.name,
@@ -1136,6 +1136,24 @@ class UKDemocracySimulator {
             performanceMetrics: { ...scenario.performanceMetrics },
             cabinet,
             agendaItems: [],
+            issuePressures: {
+                publicServices: 52,
+                economy: 48,
+                livingStandards: 50,
+                immigration: 44,
+                climate: 49,
+                security: 46
+            },
+            mediaNarrative: {
+                headline: 'A new government is still defining what competence looks like.',
+                summary: 'The country is watching delivery, not just rhetoric.',
+                tone: 'info',
+                talkingPoints: [
+                    'Visible delivery will matter more than clean speeches.',
+                    'Front-line services remain the first test of competence.',
+                    'The next few months will define the political weather.'
+                ]
+            },
             pollHistory: [pollEntry],
             electionLedger: scenario.electionLedger.map((entry) => ({ ...entry })),
             implementationQueue: scenario.implementationQueue.map((item) => ({
@@ -1259,6 +1277,8 @@ class UKDemocracySimulator {
         const changes = this.processPolicyChanges();
         const completed = this.updateImplementationQueue();
         this.updatePerformanceMetrics();
+        const issuePressures = this.buildIssuePressures();
+        this.applyNationalMoodDrift(issuePressures);
         this.recalculateApproval();
         this.generatePoliticalCapital();
         this.updateGovernmentStability();
@@ -1269,7 +1289,7 @@ class UKDemocracySimulator {
         }
 
         const event = !this.gameState.electionResolved ? this.generateRandomEvent() : null;
-        this.refreshCampaignState();
+        this.refreshCampaignState(issuePressures);
         if (!event) {
             this.recordPollSnapshot();
         }
@@ -1488,10 +1508,12 @@ class UKDemocracySimulator {
 
         this.gameState.politicalCapital -= choice.cost;
         this.applyEventEffects(choice.effects || {});
+        const issuePressures = this.buildIssuePressures();
+        this.applyNationalMoodDrift(issuePressures, 0.4);
         this.recalculateApproval();
         this.updateGovernmentStability();
         this.handleCabinetPressure();
-        this.refreshCampaignState();
+        this.refreshCampaignState(issuePressures);
         this.recordPollSnapshot();
         this.gameState.events.unshift({
             title: event.title,
@@ -1578,18 +1600,22 @@ class UKDemocracySimulator {
 
     updateRegionalSupport() {
         const regions = {
-            'Scotland': [35, 0.8],
-            'Northern England': [52, 0.6],
-            'Midlands': [48, 0.7],
-            'Wales': [45, 0.5],
-            'London': [58, 0.4],
-            'South': [38, 0.9]
+            'Scotland': [35, 0.8, { publicServices: 0.16, climate: 0.18, economy: 0.08, livingStandards: 0.08, immigration: 0.04, security: 0.06 }],
+            'Northern England': [52, 0.6, { publicServices: 0.18, climate: 0.06, economy: 0.14, livingStandards: 0.18, immigration: 0.06, security: 0.08 }],
+            'Midlands': [48, 0.7, { publicServices: 0.12, climate: 0.04, economy: 0.16, livingStandards: 0.17, immigration: 0.12, security: 0.12 }],
+            'Wales': [45, 0.5, { publicServices: 0.18, climate: 0.14, economy: 0.1, livingStandards: 0.12, immigration: 0.04, security: 0.06 }],
+            'London': [58, 0.4, { publicServices: 0.12, climate: 0.2, economy: 0.1, livingStandards: 0.1, immigration: 0.08, security: 0.05 }],
+            'South': [38, 0.9, { publicServices: 0.08, climate: 0.06, economy: 0.18, livingStandards: 0.14, immigration: 0.14, security: 0.1 }]
         };
-        Object.entries(regions).forEach(([region, [base, volatility]]) => {
+        const issuePressures = this.gameState.issuePressures || this.buildIssuePressures();
+        Object.entries(regions).forEach(([region, [base, volatility, weights]]) => {
             const swing = (this.gameState.approvalRating - 42) * volatility;
             const authorityFactor = (this.gameState.governmentStability - 50) * 0.12;
+            const issueFactor = Object.entries(weights).reduce((total, [issue, weight]) => {
+                return total + (55 - issuePressures[issue]) * weight;
+            }, 0);
             this.gameState.regionalSupport[region] = this.clamp(
-                base + swing + authorityFactor + (Math.random() - 0.5) * 3,
+                base + swing + authorityFactor + issueFactor + (Math.random() - 0.5) * 3,
                 15,
                 75
             );
@@ -1661,9 +1687,12 @@ class UKDemocracySimulator {
     }
 
     calculateProjectedSeats() {
+        const issuePressures = this.gameState.issuePressures || this.buildIssuePressures();
+        const averagePressure = Object.values(issuePressures).reduce((sum, value) => sum + value, 0) / Object.keys(issuePressures).length;
         const score = this.gameState.approvalRating
             + this.gameState.governmentStability * 0.35
-            + this.getAverageCabinetLoyalty() * 0.08;
+            + this.getAverageCabinetLoyalty() * 0.08
+            - Math.max(0, averagePressure - 48) * 0.42;
         return this.clamp(
             Math.round(138 + score * 2.05 + this.getDifficultyConfig().seatBonus),
             70,
@@ -1672,6 +1701,12 @@ class UKDemocracySimulator {
     }
 
     calculateLegacyScore(projectedSeats = this.calculateProjectedSeats()) {
+        const issuePressures = this.gameState.issuePressures || this.buildIssuePressures();
+        const publicMoodScore = this.clamp(
+            100 - (Object.values(issuePressures).reduce((sum, value) => sum + value, 0) / Object.keys(issuePressures).length),
+            0,
+            100
+        );
         const servicesScore = this.clamp(
             100
             - (this.gameState.performanceMetrics.nhsWaitingTimes - 12) * 4
@@ -1708,6 +1743,7 @@ class UKDemocracySimulator {
             + servicesScore * 0.16
             + economyScore * 0.16
             + deliveryScore * 0.06
+            + publicMoodScore * 0.08
             + seatScore * 0.08
         );
     }
@@ -1781,6 +1817,159 @@ class UKDemocracySimulator {
         ];
     }
 
+    buildIssuePressures() {
+        return {
+            publicServices: this.clamp(
+                26
+                + this.gameState.performanceMetrics.nhsWaitingTimes * 2.2
+                + (62 - this.gameState.performanceMetrics.educationStandards) * 0.55
+                + (55 - this.gameState.policies.nhsFunding) * 0.22
+                + (45 - this.gameState.policies.socialCare) * 0.18,
+                10,
+                95
+            ),
+            economy: this.clamp(
+                34
+                - this.gameState.performanceMetrics.gdpGrowth * 9
+                + this.gameState.performanceMetrics.unemployment * 6.4
+                + Math.max(0, this.gameState.policies.corporationTax - 27) * 1.1
+                + Math.max(0, this.gameState.policies.incomeTax - 28) * 0.45,
+                10,
+                95
+            ),
+            livingStandards: this.clamp(
+                30
+                - this.gameState.performanceMetrics.gdpGrowth * 7
+                + this.gameState.performanceMetrics.unemployment * 5.2
+                + this.gameState.performanceMetrics.nhsWaitingTimes * 0.95
+                + this.gameState.policies.incomeTax * 0.52,
+                10,
+                95
+            ),
+            immigration: this.clamp(
+                26
+                + Math.abs(this.gameState.policies.immigration - 52) * 0.85
+                + Math.max(0, 42 - this.gameState.approvalRating) * 0.4
+                + Math.max(0, 55 - this.getAverageCabinetLoyalty()) * 0.15,
+                10,
+                95
+            ),
+            climate: this.clamp(
+                68
+                - this.gameState.performanceMetrics.climateProgress
+                + Math.max(0, 24 - this.gameState.performanceMetrics.gdpGrowth * 4)
+                + Math.max(0, 23 - this.gameState.policies.corporationTax) * 0.5,
+                10,
+                95
+            ),
+            security: this.clamp(
+                22
+                + this.gameState.performanceMetrics.crimeRate * 1.05
+                + Math.max(0, 58 - this.gameState.policies.policeFunding) * 0.34
+                + Math.max(0, 52 - this.gameState.governmentStability) * 0.22,
+                10,
+                95
+            )
+        };
+    }
+
+    applyNationalMoodDrift(issuePressures, multiplier = 1) {
+        const serviceRelief = (60 - issuePressures.publicServices) / 18;
+        const economyRelief = (60 - issuePressures.economy) / 18;
+        const livingRelief = (60 - issuePressures.livingStandards) / 18;
+        const borderRelief = (60 - issuePressures.immigration) / 18;
+        const climateRelief = (60 - issuePressures.climate) / 18;
+        const securityRelief = (60 - issuePressures.security) / 18;
+        const competenceRelief = ((this.gameState.governmentStability - 50) + (this.getAverageCabinetLoyalty() - 60)) / 22;
+        const drift = {
+            'Labour Supporters': serviceRelief * 0.9 + climateRelief * 0.4 + competenceRelief * 0.55 + livingRelief * 0.25,
+            'Conservative Supporters': economyRelief * 0.7 + securityRelief * 0.55 + borderRelief * 0.45 + competenceRelief * 0.25,
+            'LibDem Supporters': serviceRelief * 0.55 + climateRelief * 0.55 + economyRelief * 0.25 + competenceRelief * 0.4,
+            'Reform Supporters': borderRelief * 0.95 + securityRelief * 0.45 + livingRelief * 0.25 + competenceRelief * 0.1,
+            'Green Supporters': climateRelief * 1.15 + serviceRelief * 0.35 + competenceRelief * 0.2,
+            'Floating Voters': economyRelief * 0.8 + livingRelief * 0.75 + serviceRelief * 0.65 + competenceRelief * 0.65 + securityRelief * 0.25
+        };
+
+        Object.entries(drift).forEach(([group, delta]) => {
+            this.gameState.voterApproval[group] = this.clamp(
+                this.gameState.voterApproval[group] + delta * multiplier,
+                0,
+                100
+            );
+        });
+    }
+
+    getPressureTone(score) {
+        if (score >= 72) return 'error';
+        if (score >= 56) return 'warning';
+        if (score >= 40) return 'info';
+        return 'success';
+    }
+
+    getIssueLabel(issueKey) {
+        return {
+            publicServices: 'Public services',
+            economy: 'Economy',
+            livingStandards: 'Living standards',
+            immigration: 'Immigration',
+            climate: 'Climate',
+            security: 'Security'
+        }[issueKey] || issueKey;
+    }
+
+    buildMediaNarrative(issuePressures) {
+        const rankedIssues = Object.entries(issuePressures).sort((a, b) => b[1] - a[1]);
+        const [topIssue, topScore] = rankedIssues[0];
+        const [secondIssue] = rankedIssues[1];
+        const weakestRegion = Object.entries(this.gameState.regionalSupport).sort((a, b) => a[1] - b[1])[0]?.[0] || 'the Midlands';
+        const cabinetAverage = Math.round(this.getAverageCabinetLoyalty());
+        const templates = {
+            publicServices: {
+                headline: 'Hospitals and schools remain the core test of competence.',
+                summary: `Front-line delivery is dominating the argument, and the opposition believes the service state is where your government can still be broken.`,
+                attack: `Opponents are targeting ${weakestRegion} with a simple line: the promises were louder than the delivery.`
+            },
+            economy: {
+                headline: 'Growth and business confidence are setting the pace of politics.',
+                summary: `Treasury credibility is back at the centre of Westminster, with every wobble in jobs or growth spilling straight into the polling conversation.`,
+                attack: `Swing seats in ${weakestRegion} are being fought on whether ministers can actually keep the economy steady.`
+            },
+            livingStandards: {
+                headline: 'The country is asking whether daily life feels easier yet.',
+                summary: `Cost-of-living pressure is shaping the public mood more than abstract reform language, especially among loose voters who want proof, not process.`,
+                attack: `The loudest attack line now is that ordinary households are still waiting for tangible relief in ${weakestRegion}.`
+            },
+            immigration: {
+                headline: 'Border control is back on the front pages.',
+                summary: `Migration and state authority are driving political attention, and small signals of drift are becoming much bigger than the underlying data.`,
+                attack: `The government is being pressed hardest in ${weakestRegion}, where critics say ministers still do not look fully in command of the border brief.`
+            },
+            climate: {
+                headline: 'Net zero credibility is shaping the modernising case.',
+                summary: `Climate delivery is becoming a test of seriousness rather than just virtue, especially with younger and liberal voters watching for drift or retreat.`,
+                attack: `Campaigns in ${weakestRegion} are starting to frame climate policy as a question of seriousness versus hesitation.`
+            },
+            security: {
+                headline: 'Law, order, and authority are hardening into a political weather system.',
+                summary: `Crime, visible disorder, and general confidence in the state are setting the backdrop for how every other argument lands.`,
+                attack: `The hardest edge of the campaign is emerging in ${weakestRegion}, where voters are asking whether ministers still look in control.`
+            }
+        };
+        const narrative = templates[topIssue];
+        const tone = this.getPressureTone(topScore);
+
+        return {
+            headline: narrative.headline,
+            summary: narrative.summary,
+            tone,
+            talkingPoints: [
+                narrative.attack,
+                `Cabinet cohesion is averaging ${cabinetAverage}, so party discipline is ${cabinetAverage >= 65 ? 'still a strength' : 'becoming part of the story'}.`,
+                `The next visible gain needs to land on ${this.getIssueLabel(topIssue).toLowerCase()} before ${this.getIssueLabel(secondIssue).toLowerCase()} drags the conversation wider.`
+            ]
+        };
+    }
+
     formatDateLabelFor(date) {
         return date.toLocaleString('en-GB', { month: 'short', year: 'numeric' });
     }
@@ -1789,8 +1978,10 @@ class UKDemocracySimulator {
         return this.formatDateLabelFor(date);
     }
 
-    refreshCampaignState() {
+    refreshCampaignState(precomputedIssuePressures = null) {
         this.gameState.agendaItems = this.buildAgendaItems();
+        this.gameState.issuePressures = precomputedIssuePressures || this.buildIssuePressures();
+        this.gameState.mediaNarrative = this.buildMediaNarrative(this.gameState.issuePressures);
         this.gameState.legacyScore = this.calculateLegacyScore();
     }
 
@@ -1847,6 +2038,7 @@ class UKDemocracySimulator {
         if (approvalDelta > 0) parts.push(`National approval rose by ${approvalDelta} point${approvalDelta === 1 ? '' : 's'}.`);
         else if (approvalDelta < 0) parts.push(`National approval fell by ${Math.abs(approvalDelta)} point${Math.abs(approvalDelta) === 1 ? '' : 's'}.`);
         else parts.push('The national mood was broadly unchanged.');
+        if (this.gameState.mediaNarrative?.headline) parts.push(`Narrative: ${this.gameState.mediaNarrative.headline}`);
         parts.push(`Election outlook: ${this.getElectionOutlook().toLowerCase()}.`);
         parts.push(`Legacy score now ${this.gameState.legacyScore}.`);
         return parts.join(' ');
@@ -2007,6 +2199,7 @@ class UKDemocracySimulator {
 
         this.updateAgendaDisplay();
         this.updatePollHistoryDisplay();
+        this.updateNationalMoodDisplay();
         this.updateEventsDisplay();
         this.updateQueueDisplay();
         this.updateElectionLedgerDisplay();
@@ -2173,6 +2366,34 @@ class UKDemocracySimulator {
             </div>
             <div class="poll-rows">${recentRows}</div>
         `;
+    }
+
+    updateNationalMoodDisplay() {
+        const pressureList = document.getElementById('issuePressureList');
+        const headline = document.getElementById('mediaNarrativeHeadline');
+        const summary = document.getElementById('mediaNarrativeSummary');
+        const talkingPoints = document.getElementById('mediaTalkingPoints');
+        if (!pressureList || !headline || !summary || !talkingPoints) return;
+
+        const issuePressures = this.gameState.issuePressures || this.buildIssuePressures();
+        const rankedIssues = Object.entries(issuePressures).sort((a, b) => b[1] - a[1]);
+        pressureList.innerHTML = rankedIssues.map(([issue, score]) => {
+            const tone = this.getPressureTone(score);
+            return `
+                <article class="issue-pressure issue-pressure--${tone}">
+                    <div class="issue-pressure__head">
+                        <strong>${this.getIssueLabel(issue)}</strong>
+                        <span>${Math.round(score)}</span>
+                    </div>
+                    <div class="issue-pressure__bar"><span style="width:${Math.round(score)}%"></span></div>
+                    <p>${tone === 'error' ? 'Dominating coverage' : tone === 'warning' ? 'Rising fast' : tone === 'info' ? 'Manageable' : 'Under control'}</p>
+                </article>
+            `;
+        }).join('');
+
+        headline.textContent = this.gameState.mediaNarrative?.headline || 'The political weather is still forming.';
+        summary.textContent = this.gameState.mediaNarrative?.summary || 'Voters are still deciding what matters most.';
+        talkingPoints.innerHTML = (this.gameState.mediaNarrative?.talkingPoints || []).map((point) => `<li>${point}</li>`).join('');
     }
 
     updateEventsDisplay() {
@@ -2374,7 +2595,7 @@ class UKDemocracySimulator {
             this.gameState = {
                 ...initial,
                 ...parsed,
-                version: 3,
+                version: 4,
                 currentDate: parsed.currentDate ? new Date(parsed.currentDate) : initial.currentDate,
                 electionDate: parsed.electionDate ? new Date(parsed.electionDate) : initial.electionDate,
                 policies: { ...initial.policies, ...(parsed.policies || {}) },

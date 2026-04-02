@@ -920,7 +920,9 @@ select.form-control {
 .briefing-panel,
 .uk-map-container,
 .events-feed,
-.implementation-queue {
+.implementation-queue,
+.national-mood-panel,
+.narrative-panel {
   background-color: var(--color-surface);
   border-radius: var(--radius-lg);
   border: 1px solid var(--color-card-border);
@@ -931,7 +933,9 @@ select.form-control {
 .briefing-panel h2,
 .uk-map-container h2,
 .events-feed h2,
-.implementation-queue h2 {
+.implementation-queue h2,
+.national-mood-panel h2,
+.narrative-panel h2 {
   color: #1e3a5f;
   margin-bottom: var(--space-16);
   font-size: var(--font-size-xl);
@@ -986,6 +990,12 @@ select.form-control {
 .strategy-dashboard {
   display: grid;
   grid-template-columns: 1.1fr 0.9fr;
+  gap: var(--space-16);
+}
+
+.mood-dashboard {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   gap: var(--space-16);
 }
 
@@ -1178,6 +1188,137 @@ select.form-control {
   display: flex;
   flex-direction: column;
   gap: var(--space-8);
+}
+
+.issue-pressure-list,
+.narrative-points {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-10);
+}
+
+.issue-pressure {
+  border: 1px solid var(--color-card-border-inner);
+  border-radius: var(--radius-base);
+  padding: var(--space-12);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.7), rgba(236, 244, 252, 0.8));
+}
+
+.issue-pressure__head {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-8);
+  align-items: center;
+  margin-bottom: var(--space-8);
+}
+
+.issue-pressure__head strong {
+  color: #1e3a5f;
+  font-size: var(--font-size-sm);
+}
+
+.issue-pressure__head span {
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text);
+}
+
+.issue-pressure__bar {
+  height: 10px;
+  border-radius: var(--radius-full);
+  background: rgba(30, 58, 95, 0.08);
+  overflow: hidden;
+}
+
+.issue-pressure__bar span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #1e3a5f, #2c5f8a);
+}
+
+.issue-pressure p {
+  margin: var(--space-8) 0 0;
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+}
+
+.issue-pressure--success {
+  border-color: rgba(19, 114, 76, 0.24);
+}
+
+.issue-pressure--success .issue-pressure__bar span {
+  background: linear-gradient(90deg, #1e3a5f, #2f8a6a);
+}
+
+.issue-pressure--warning {
+  border-color: rgba(150, 95, 18, 0.24);
+}
+
+.issue-pressure--warning .issue-pressure__bar span {
+  background: linear-gradient(90deg, #8b5b00, #d2881f);
+}
+
+.issue-pressure--error {
+  border-color: rgba(150, 32, 48, 0.26);
+}
+
+.issue-pressure--error .issue-pressure__bar span {
+  background: linear-gradient(90deg, #8f2136, #c8102e);
+}
+
+.narrative-card {
+  border: 1px solid rgba(30, 58, 95, 0.12);
+  border-radius: calc(var(--radius-lg) + 2px);
+  padding: var(--space-16);
+  background:
+    radial-gradient(circle at top right, rgba(200, 16, 46, 0.08), transparent 28%),
+    linear-gradient(150deg, rgba(18, 39, 67, 0.04), rgba(44, 95, 138, 0.12));
+}
+
+.narrative-kicker {
+  font-size: var(--font-size-xs);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-text-secondary);
+  margin-bottom: var(--space-10);
+}
+
+.narrative-card h3 {
+  color: #1e3a5f;
+  font-size: var(--font-size-2xl);
+  margin-bottom: var(--space-12);
+}
+
+.narrative-card p {
+  color: var(--color-text-secondary);
+  margin: 0 0 var(--space-16);
+  line-height: 1.65;
+}
+
+.narrative-points {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.narrative-points li {
+  position: relative;
+  padding-left: 18px;
+  color: var(--color-text);
+  font-size: var(--font-size-sm);
+  line-height: 1.55;
+}
+
+.narrative-points li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 8px;
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: #c8102e;
+  box-shadow: 0 0 0 4px rgba(200, 16, 46, 0.08);
 }
 
 .poll-row {
@@ -1858,7 +1999,8 @@ select.form-control {
     grid-template-columns: 300px 1fr 280px;
   }
 
-  .strategy-dashboard {
+  .strategy-dashboard,
+  .mood-dashboard {
     grid-template-columns: 1fr;
   }
 }
@@ -1905,7 +2047,8 @@ select.form-control {
 
   .campaign-tags,
   .briefing-header,
-  .briefing-actions {
+  .briefing-actions,
+  .section-header {
     flex-direction: column;
   }
 

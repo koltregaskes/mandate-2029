@@ -15,6 +15,8 @@ python -m http.server 8011
 - Adjust department sliders to set policy direction.
 - Respond to monthly crisis events with political judgement, not just budget maths.
 - Expect crisis events to react to the calendar, the scenario, and the condition of the country.
+- Track the national mood layer to see which issues are dominating the political weather.
+- Use the media narrative panel to understand the current attack lines and where the campaign is getting softer.
 - Use `New Scenario` to swap between different starting governments and difficulty levels.
 - Press `Next Turn` to advance one month.
 - Watch approval, government stability, implementation queue, and election outlook.
