@@ -1743,6 +1743,11 @@ select.form-control {
   margin-bottom: var(--space-4);
 }
 
+.copyright-line {
+  margin-top: var(--space-8);
+  opacity: 0.82;
+}
+
 .majority-info {
   font-weight: var(--font-weight-bold);
 }
