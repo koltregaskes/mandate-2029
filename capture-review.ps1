@@ -1,7 +1,8 @@
 param(
     [int]$Port = 8011,
     [string]$CaptureDir = 'W:\Repos\_My Games\LOCAL-ONLY\captures\mandate-2029',
-    [string]$StampDate = (Get-Date -Format 'yyyy-MM-dd')
+    [string]$StampDate = (Get-Date -Format 'yyyy-MM-dd'),
+    [string]$BrowserPath
 )
 
 $ErrorActionPreference = 'Stop'
@@ -13,19 +14,32 @@ if (-not $node) {
     throw 'Node.js was not found in PATH.'
 }
 
-$chrome = if (Get-Command chrome.exe -ErrorAction SilentlyContinue) {
-    (Get-Command chrome.exe).Source
-} elseif (Test-Path 'C:\Program Files\Google\Chrome\Application\chrome.exe') {
-    'C:\Program Files\Google\Chrome\Application\chrome.exe'
-} elseif (Test-Path 'C:\Program Files (x86)\Google\Chrome\Application\chrome.exe') {
-    'C:\Program Files (x86)\Google\Chrome\Application\chrome.exe'
-} else {
-    $null
+function Resolve-EdgeBrowserPath {
+    param([string]$PreferredPath)
+
+    if ($PreferredPath -and (Test-Path $PreferredPath)) {
+        return $PreferredPath
+    }
+
+    $candidates = @(
+        'C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe',
+        'C:\Program Files\Microsoft\Edge\Application\msedge.exe'
+    )
+    foreach ($candidate in $candidates) {
+        if (Test-Path $candidate) {
+            return $candidate
+        }
+    }
+
+    $command = Get-Command msedge.exe -ErrorAction SilentlyContinue
+    if ($command) {
+        return $command.Source
+    }
+
+    throw 'Microsoft Edge was not found.'
 }
 
-if (-not $chrome) {
-    throw 'Google Chrome was not found.'
-}
+$browser = Resolve-EdgeBrowserPath -PreferredPath $BrowserPath
 
 function Stop-ProcessTree {
     param([int]$ProcessId)
@@ -77,7 +91,7 @@ function Invoke-Capture {
 
     Remove-Item -Recurse -Force $ProfileDir -ErrorAction SilentlyContinue
     New-Item -ItemType Directory -Force -Path $ProfileDir | Out-Null
-    & $chrome '--headless=new' "--user-data-dir=$ProfileDir" '--disable-gpu' "--window-size=$Width,$Height" "--virtual-time-budget=$VirtualTimeBudget" "--screenshot=$OutputPath" $Url | Out-Null
+    & $browser '--headless=new' "--user-data-dir=$ProfileDir" '--disable-gpu' '--disable-sync' '--no-first-run' '--no-default-browser-check' "--window-size=$Width,$Height" "--virtual-time-budget=$VirtualTimeBudget" "--screenshot=$OutputPath" $Url | Out-Null
     if (-not (Test-Path $OutputPath)) {
         throw "Capture failed for $Url"
     }

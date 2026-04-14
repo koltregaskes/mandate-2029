@@ -1,7 +1,7 @@
 param(
     [int]$Port = 8011,
     [string]$CaptureRoot = 'W:\Repos\_My Games\LOCAL-ONLY\captures\mandate-2029',
-    [string]$ChromePath = 'C:\Program Files\Google\Chrome\Application\chrome.exe'
+    [string]$BrowserPath
 )
 
 $ErrorActionPreference = 'Stop'
@@ -12,9 +12,33 @@ $node = (Get-Command node.exe -ErrorAction SilentlyContinue).Source
 if (-not $node) {
     throw 'Node.js was not found in PATH.'
 }
-if (-not (Test-Path $ChromePath)) {
-    throw "Chrome not found at $ChromePath"
+
+function Resolve-EdgeBrowserPath {
+    param([string]$PreferredPath)
+
+    if ($PreferredPath -and (Test-Path $PreferredPath)) {
+        return $PreferredPath
+    }
+
+    $candidates = @(
+        'C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe',
+        'C:\Program Files\Microsoft\Edge\Application\msedge.exe'
+    )
+    foreach ($candidate in $candidates) {
+        if (Test-Path $candidate) {
+            return $candidate
+        }
+    }
+
+    $command = Get-Command msedge.exe -ErrorAction SilentlyContinue
+    if ($command) {
+        return $command.Source
+    }
+
+    throw 'Microsoft Edge was not found.'
 }
+
+$browser = Resolve-EdgeBrowserPath -PreferredPath $BrowserPath
 
 function Stop-ProcessTree {
     param([int]$ProcessId)
@@ -66,10 +90,13 @@ function Invoke-Capture {
     Remove-Item -Recurse -Force $profileDir -ErrorAction SilentlyContinue
     New-Item -ItemType Directory -Force -Path $profileDir | Out-Null
 
-    & $ChromePath `
+    & $browser `
         '--headless=new' `
         "--user-data-dir=$profileDir" `
         '--disable-gpu' `
+        '--disable-sync' `
+        '--no-first-run' `
+        '--no-default-browser-check' `
         "--window-size=$Width,$Height" `
         "--virtual-time-budget=$BudgetMs" `
         "--screenshot=$filePath" `
