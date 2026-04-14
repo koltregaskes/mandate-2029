@@ -28,3 +28,12 @@ python -m http.server 8011
 - Mouse or touch: change policies and trigger actions
 - `?`: open the help and controls briefing
 - `Esc`: close the help briefing
+
+## Review Routes
+
+- Opening review state: `http://localhost:8011/?autostart=1&review=1`
+- Live event review state: `http://localhost:8011/?autostart=1&review=1&state=event`
+- Late run-in checkpoint: `http://localhost:8011/?autostart=1&review=1&state=run-in`
+- Election result review state: `http://localhost:8011/?autostart=1&review=1&state=result`
+
+Review mode intentionally ignores local save load/write behavior so captures always land in the same curated slice.

@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mandate 2029 - Governing Britain</title>
     <link rel="icon" href="data:,">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;700&family=Manrope:wght@400;500;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -123,13 +126,33 @@
                     <div class="briefing-header">
                         <div>
                             <h2>Prime Minister's Briefing</h2>
-                            <div class="briefing-subtitle">Your latest internal update from Downing Street.</div>
+                            <div class="briefing-subtitle">Cabinet room summary for the featured campaign run to 2029.</div>
                         </div>
                         <span class="briefing-badge" id="gameStatusBadge">In Office</span>
                     </div>
                     <p class="briefing-summary" id="turnSummary">
                         Your government has just taken office. Choose where to spend your political capital and shape the next election.
                     </p>
+                    <div class="briefing-focus-grid">
+                        <article class="briefing-focus-card">
+                            <span class="briefing-label">Campaign Phase</span>
+                            <strong id="campaignPhase">Opening chapter</strong>
+                            <p id="campaignPhaseSummary">The government still has room to set the weather before the run-in begins.</p>
+                        </article>
+                        <article class="briefing-focus-card">
+                            <span class="briefing-label">Top Pressure</span>
+                            <strong id="topPressureLabel">Public services</strong>
+                            <p id="topPressureSummary">Front-line competence is setting the tone for everything else.</p>
+                        </article>
+                        <article class="briefing-focus-card">
+                            <span class="briefing-label">Party Risk</span>
+                            <strong id="partyRiskLabel">Treasury Hawks</strong>
+                            <p id="partyRiskSummary">The fiscal side of the party is calm for now, but expects discipline.</p>
+                        </article>
+                    </div>
+                    <ul class="briefing-highlights" id="turnHighlights">
+                        <li>Set a few policy changes, advance a month, and read how the press line changes.</li>
+                    </ul>
                     <div class="briefing-grid">
                         <div class="briefing-stat">
                             <span class="briefing-label">Government Stability</span>
@@ -151,8 +174,67 @@
                     <div class="briefing-actions">
                         <button class="btn btn--outline btn--sm" id="helpBtn">How To Play</button>
                         <button class="btn btn--outline btn--sm" id="saveGameBtn">Save Progress</button>
+                        <button class="btn btn--outline btn--sm" id="briefingOptionsBtn">Options</button>
                         <button class="btn btn--secondary btn--sm" id="resetGameBtn">New Scenario</button>
                     </div>
+                </div>
+
+                <section class="tutorial-panel" id="tutorialPanel">
+                    <div class="section-header">
+                        <div>
+                            <h2>Quickstart Tutorial</h2>
+                            <p class="section-subtitle">Learn pressure, policy, mood, and the election horizon in the first few actions.</p>
+                        </div>
+                        <button class="btn btn--outline btn--sm" id="dismissTutorialBtn">Dismiss</button>
+                    </div>
+                    <div class="tutorial-progress">
+                        <div class="tutorial-progress__head">
+                            <strong id="tutorialProgressLabel">Campaign basics 0/4</strong>
+                            <span id="tutorialProgressValue">0%</span>
+                        </div>
+                        <div class="tutorial-progress__bar">
+                            <span id="tutorialProgressBar"></span>
+                        </div>
+                        <p id="tutorialProgressSummary">Start with one visible reform, then watch how the mood and story change.</p>
+                    </div>
+                    <div class="tutorial-steps" id="tutorialSteps"></div>
+                </section>
+
+                <div class="campaign-intelligence">
+                    <section class="campaign-story-panel">
+                        <div class="section-header">
+                            <div>
+                                <h2>Campaign Story</h2>
+                                <p class="section-subtitle">The authored political arc that turns this run into a demo slice, not a sandbox drift.</p>
+                            </div>
+                        </div>
+                        <div class="story-lead">
+                            <span class="story-kicker" id="storyKicker">Featured campaign</span>
+                            <h3 id="storyHeadline">Hold the centre, land visible delivery, and reach election night alive.</h3>
+                            <p id="storySummary">This campaign is about proving competence in public before Westminster decides the story for you.</p>
+                        </div>
+                        <ul class="story-notes" id="storyNotes"></ul>
+                    </section>
+
+                    <section class="campaign-compass-panel">
+                        <div class="section-header">
+                            <div>
+                                <h2>Campaign Compass</h2>
+                                <p class="section-subtitle">Where the government is strongest, where it is fraying, and what the next turn is really about.</p>
+                            </div>
+                        </div>
+                        <div class="campaign-compass-list" id="campaignCompass"></div>
+                    </section>
+
+                    <section class="campaign-timeline-panel">
+                        <div class="section-header">
+                            <div>
+                                <h2>Campaign Timeline</h2>
+                                <p class="section-subtitle">Guaranteed judgment beats that make the featured run feel authored, not merely random.</p>
+                            </div>
+                        </div>
+                        <div class="campaign-timeline-list" id="campaignTimeline"></div>
+                    </section>
                 </div>
 
                 <div class="strategy-dashboard">
@@ -176,6 +258,38 @@
                         <div class="poll-history" id="pollHistory"></div>
                     </section>
                 </div>
+
+                <div class="operations-dashboard">
+                    <section class="campaign-priorities-panel">
+                        <div class="section-header">
+                            <div>
+                                <h2>Campaign Priorities</h2>
+                                <p class="section-subtitle">The live to-do list inside No. 10 before you advance another month.</p>
+                            </div>
+                        </div>
+                        <div class="campaign-priorities-list" id="campaignPriorities"></div>
+                    </section>
+
+                    <section class="battleground-panel">
+                        <div class="section-header">
+                            <div>
+                                <h2>Battleground Britain</h2>
+                                <p class="section-subtitle">Where the map is soft, where the seat risk sits, and what those regions need to hear next.</p>
+                            </div>
+                        </div>
+                        <div class="battleground-list" id="battlegroundList"></div>
+                    </section>
+                </div>
+
+                <section class="pressure-fronts-panel">
+                    <div class="section-header">
+                        <div>
+                            <h2>Pressure Fronts</h2>
+                            <p class="section-subtitle">How national mood, governing strain, and the map are colliding right now.</p>
+                        </div>
+                    </div>
+                    <div class="pressure-fronts-list" id="pressureFronts"></div>
+                </section>
 
                 <div class="mood-dashboard">
                     <section class="national-mood-panel">
@@ -280,6 +394,12 @@
                     </div>
                 </div>
 
+                <div class="party-factions">
+                    <h2>Party &amp; Parliament</h2>
+                    <p class="section-subtitle">The blocs you must keep broadly inside the tent if the campaign is going to hold together.</p>
+                    <div class="faction-list" id="factionList"></div>
+                </div>
+
                 <div class="performance-metrics">
                     <h2>Performance Metrics</h2>
                     <div class="metric-item" id="metricNhsWaitingTimes">
@@ -334,10 +454,17 @@
     </div>
 
     <div class="modal-overlay hidden" id="electionModal">
-        <div class="modal-card">
+        <div class="modal-card modal-card--wide modal-card--election" id="electionModalCard" data-result-tone="info">
             <div class="modal-kicker">General Election Complete</div>
             <h2 id="electionResultTitle">Election Result</h2>
             <p id="electionResultSummary"></p>
+            <div class="election-result-lead">
+                <div class="election-result-verdict">
+                    <span class="status status--info" id="electionResultToneLead">Election verdict</span>
+                    <p id="electionResultLeadSummary"></p>
+                </div>
+                <div class="election-result-signals" id="electionResultSignals"></div>
+            </div>
             <div class="election-result-grid">
                 <div class="election-result-stat">
                     <span class="briefing-label">Projected Seats</span>
@@ -351,7 +478,32 @@
                     <span class="briefing-label">Legacy Score</span>
                     <strong id="electionResultLegacy">0</strong>
                 </div>
+                <div class="election-result-stat">
+                    <span class="briefing-label">Approval</span>
+                    <strong id="electionResultApproval">0%</strong>
+                </div>
+                <div class="election-result-stat">
+                    <span class="briefing-label">Stability</span>
+                    <strong id="electionResultStability">0%</strong>
+                </div>
             </div>
+            <div class="election-result-sections">
+                <section class="election-result-section">
+                    <div class="election-result-section__head">
+                        <h3>Strategic Scorecard</h3>
+                        <span class="status status--info" id="electionResultTone">Election verdict</span>
+                    </div>
+                    <div class="election-result-scorecard" id="electionResultScorecard"></div>
+                </section>
+                <section class="election-result-section">
+                    <div class="election-result-section__head">
+                        <h3>Campaign Chronicle</h3>
+                        <span class="briefing-label">Latest four campaign beats</span>
+                    </div>
+                    <div class="election-result-chronicle" id="electionResultChronicle"></div>
+                </section>
+            </div>
+            <div class="election-result-notes" id="electionResultNotes"></div>
             <button class="btn btn--primary btn--lg" id="restartGameBtn">Choose New Government</button>
         </div>
     </div>
@@ -370,7 +522,7 @@
         <div class="modal-card">
             <div class="modal-kicker">Cabinet Briefing</div>
             <h2>How To Play Mandate 2029</h2>
-            <p>Adjust department sliders, spend political capital carefully, and survive until the general election with your coalition, your approval, and your authority intact.</p>
+            <p>Adjust department sliders, spend political capital carefully, keep your party blocs on side, and survive until the general election with enough authority to hold power.</p>
             <div class="election-result-grid">
                 <div class="election-result-stat">
                     <span class="briefing-label">Core Loop</span>
@@ -382,12 +534,18 @@
                 </div>
                 <div class="election-result-stat">
                     <span class="briefing-label">Controls</span>
-                    <strong>Use sliders to stage reforms, then press Next Turn.</strong>
+                    <strong>Use sliders to queue reforms, then press Next Turn.</strong>
                 </div>
                 <div class="election-result-stat">
                     <span class="briefing-label">Winning</span>
                     <strong>Reach election day with enough support to hold power.</strong>
                 </div>
+            </div>
+            <div class="help-bullets">
+                <div class="help-bullet">Public services, living standards, and migration pressure are the fastest ways to lose narrative control.</div>
+                <div class="help-bullet">Party blocs are not flavour text. If one of them collapses, your stability and event pressure worsen.</div>
+                <div class="help-bullet">Read the monthly highlights, the national mood panel, the campaign compass, and the campaign timeline after every turn.</div>
+                <div class="help-bullet">The featured campaign includes guaranteed milestone beats. They are there to give the demo a real beginning, middle, and end.</div>
             </div>
             <button class="btn btn--primary btn--lg" id="closeHelpBtn">Return to Briefing</button>
         </div>
@@ -399,9 +557,13 @@
             <h2>Choose Your Government</h2>
             <p>Pick the starting scenario and difficulty before swearing in the next administration.</p>
             <div class="scenario-picker" id="scenarioPicker">
+                <button class="scenario-option" data-scenario="long-campaign" type="button">
+                    <strong>The Long Campaign</strong>
+                    <span>August 2027. Two years left, thin patience, and one chance to prove the government can still look like it knows what it is doing.</span>
+                </button>
                 <button class="scenario-option" data-scenario="labour-2025" type="button">
                     <strong>Fresh Majority</strong>
-                    <span>June 2025. Plenty of runway, high expectations, and goodwill that will not last.</span>
+                    <span>June 2025. The full-term sandbox start with maximum runway, maximum expectations, and the biggest scope for drift.</span>
                 </button>
                 <button class="scenario-option" data-scenario="winter-crunch" type="button">
                     <strong>Winter Crunch</strong>
@@ -425,6 +587,68 @@
                 <button class="btn btn--outline btn--sm" id="scenarioCancelBtn">Cancel</button>
                 <button class="btn btn--primary btn--lg" id="scenarioConfirmBtn">Start Scenario</button>
             </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay hidden" id="optionsModal">
+        <div class="modal-card">
+            <div class="modal-kicker">Cabinet Office Settings</div>
+            <h2>Options</h2>
+            <p>Fine-tune the demo presentation, including the restrained audio bed and response stings.</p>
+            <div class="options-list">
+                <label class="options-row">
+                    <span>Music</span>
+                    <input id="musicToggle" type="checkbox">
+                </label>
+                <label class="options-row">
+                    <span>UI sound</span>
+                    <input id="sfxToggle" type="checkbox">
+                </label>
+                <label class="options-row">
+                    <span>Reduced motion</span>
+                    <input id="reducedMotionToggle" type="checkbox">
+                </label>
+                <label class="options-slider">
+                    <span>Master volume</span>
+                    <input id="masterVolumeSlider" type="range" min="0" max="100" value="55">
+                </label>
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn--primary btn--lg" id="closeOptionsBtn">Return to Cabinet</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="title-screen hidden" id="titleScreen">
+        <div class="title-screen__backdrop"></div>
+        <div class="title-screen__content">
+            <div class="title-screen__brand">
+                <span class="title-screen__eyebrow">Premium political strategy demo</span>
+                <h2>Mandate 2029</h2>
+                <p id="titleScenarioDescription">A sharper, more authored campaign run where the political weather turns against you unless you shape it first.</p>
+            </div>
+            <div class="title-screen__hero">
+                <div class="title-screen__hero-stat">
+                    <span>Featured Arc</span>
+                    <strong id="titleArcLength">24 months</strong>
+                </div>
+                <div class="title-screen__hero-stat">
+                    <span>Starting Outlook</span>
+                    <strong id="titleOutlook">Narrow lead</strong>
+                </div>
+                <div class="title-screen__hero-stat">
+                    <span>Primary Risk</span>
+                    <strong id="titleTopRisk">Public services</strong>
+                </div>
+            </div>
+            <div class="title-screen__menu">
+                <button class="btn btn--primary btn--lg" id="continueGameBtn">Continue</button>
+                <button class="btn btn--secondary btn--lg" id="newGovernmentBtn">New Government</button>
+                <button class="btn btn--outline btn--sm" id="titleScenariosBtn">Scenarios</button>
+                <button class="btn btn--outline btn--sm" id="titleHowToPlayBtn">How To Play</button>
+                <button class="btn btn--outline btn--sm" id="optionsBtn">Options</button>
+            </div>
+            <div class="title-screen__save" id="titleSaveSummary"></div>
         </div>
     </div>
 

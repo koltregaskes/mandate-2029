@@ -37,8 +37,8 @@
   --color-info-rgb: 98, 108, 113;
 
   /* Typography */
-  --font-family-base: "FKGroteskNeue", "Geist", "Inter", -apple-system,
-    BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-family-base: "Manrope", "Segoe UI", sans-serif;
+  --font-family-display: "Fraunces", Georgia, serif;
   --font-family-mono: "Berkeley Mono", ui-monospace, SFMono-Regular, Menlo,
     Monaco, Consolas, monospace;
   --font-size-xs: 11px;
@@ -228,6 +228,13 @@ html {
 body {
   margin: 0;
   padding: 0;
+  background:
+    radial-gradient(circle at top, rgba(40, 92, 140, 0.14), transparent 38%),
+    linear-gradient(180deg, rgba(10, 18, 31, 0.96), rgba(7, 14, 26, 1));
+}
+
+.hidden {
+  display: none !important;
 }
 
 *,
@@ -792,9 +799,11 @@ select.form-control {
 
 /* Left Panel - Policies */
 .left-panel {
-  background-color: var(--color-surface);
+  background:
+    linear-gradient(180deg, rgba(14, 22, 33, 0.96), rgba(23, 32, 44, 0.96));
+  color: rgba(236, 242, 248, 0.94);
   border-radius: var(--radius-lg);
-  border: 1px solid var(--color-card-border);
+  border: 1px solid rgba(110, 138, 168, 0.16);
   box-shadow: var(--shadow-sm);
   padding: var(--space-16);
   overflow-y: auto;
@@ -810,7 +819,7 @@ select.form-control {
 }
 
 .panel-header h2 {
-  color: #1e3a5f;
+  color: rgba(236, 242, 248, 0.94);
   font-size: var(--font-size-xl);
 }
 
@@ -829,23 +838,23 @@ select.form-control {
 
 .department-section {
   margin-bottom: var(--space-24);
-  border: 1px solid var(--color-border);
+  border: 1px solid rgba(110, 138, 168, 0.12);
   border-radius: var(--radius-base);
   padding: var(--space-16);
-  background: linear-gradient(145deg, rgba(30, 58, 95, 0.02), rgba(44, 95, 138, 0.05));
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.02), rgba(105, 165, 214, 0.05));
 }
 
 .department-section h3 {
-  color: #1e3a5f;
+  color: rgba(236, 242, 248, 0.94);
   font-size: var(--font-size-lg);
   margin-bottom: var(--space-8);
-  border-bottom: 1px solid var(--color-border);
+  border-bottom: 1px solid rgba(110, 138, 168, 0.12);
   padding-bottom: var(--space-4);
 }
 
 .secretary-info {
   font-size: var(--font-size-sm);
-  color: var(--color-text-secondary);
+  color: rgba(181, 197, 214, 0.78);
   font-style: italic;
   margin-bottom: var(--space-16);
 }
@@ -853,16 +862,16 @@ select.form-control {
 .policy-item {
   margin-bottom: var(--space-16);
   padding: var(--space-12);
-  background: var(--color-surface);
+  background: rgba(255, 255, 255, 0.03);
   border-radius: var(--radius-sm);
-  border: 1px solid var(--color-card-border-inner);
+  border: 1px solid rgba(132, 159, 187, 0.08);
 }
 
 .policy-item label {
   display: block;
   font-weight: var(--font-weight-medium);
   margin-bottom: var(--space-8);
-  color: var(--color-text);
+  color: rgba(236, 242, 248, 0.92);
 }
 
 .policy-slider {
@@ -898,14 +907,14 @@ select.form-control {
 
 .policy-value {
   font-weight: var(--font-weight-bold);
-  color: var(--color-primary);
+  color: #6fd0e8;
   margin-right: var(--space-12);
 }
 
 .policy-cost {
   font-size: var(--font-size-sm);
-  color: var(--color-text-secondary);
-  background: rgba(30, 58, 95, 0.1);
+  color: rgba(207, 219, 232, 0.86);
+  background: rgba(95, 146, 196, 0.12);
   padding: var(--space-2) var(--space-6);
   border-radius: var(--radius-sm);
 }
@@ -993,6 +1002,12 @@ select.form-control {
   gap: var(--space-16);
 }
 
+.operations-dashboard {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-16);
+}
+
 .mood-dashboard {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -1001,7 +1016,10 @@ select.form-control {
 
 .agenda-panel,
 .polling-panel,
-.election-ledger {
+.election-ledger,
+.pressure-fronts-panel,
+.campaign-priorities-panel,
+.battleground-panel {
   background-color: var(--color-surface);
   border-radius: var(--radius-lg);
   border: 1px solid var(--color-card-border);
@@ -1032,6 +1050,13 @@ select.form-control {
   border-radius: var(--radius-base);
   background: rgba(255, 255, 255, 0.55);
   border: 1px solid rgba(30, 58, 95, 0.1);
+}
+
+.briefing-stat strong,
+.election-result-stat strong {
+  color: #15304d;
+  font-size: 1.18rem;
+  line-height: 1.2;
 }
 
 .briefing-label {
@@ -1821,6 +1846,28 @@ select.form-control {
   width: min(760px, 100%);
 }
 
+.modal-card--election {
+  width: min(980px, 100%);
+}
+
+.modal-card--election[data-result-tone="success"] {
+  background:
+    radial-gradient(circle at top right, rgba(23, 106, 81, 0.14), transparent 30%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(243, 248, 245, 0.96));
+}
+
+.modal-card--election[data-result-tone="warning"] {
+  background:
+    radial-gradient(circle at top right, rgba(185, 106, 25, 0.16), transparent 30%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(249, 246, 241, 0.96));
+}
+
+.modal-card--election[data-result-tone="error"] {
+  background:
+    radial-gradient(circle at top right, rgba(179, 39, 60, 0.16), transparent 30%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(250, 243, 245, 0.96));
+}
+
 .modal-card h2 {
   color: #173154;
   margin-bottom: var(--space-10);
@@ -1850,6 +1897,154 @@ select.form-control {
 
 .modal-card strong {
   color: #173154;
+}
+
+.election-result-lead {
+  display: grid;
+  gap: var(--space-14);
+  margin: var(--space-18) 0;
+}
+
+.election-result-verdict {
+  padding: var(--space-16);
+  border-radius: 20px;
+  background:
+    linear-gradient(135deg, rgba(10, 28, 48, 0.96), rgba(20, 53, 87, 0.88)),
+    radial-gradient(circle at top right, rgba(255, 255, 255, 0.1), transparent 30%);
+  color: rgba(255, 255, 255, 0.92);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+.election-result-verdict .status {
+  margin-bottom: var(--space-10);
+}
+
+.election-result-verdict p {
+  margin: 0;
+  color: rgba(237, 243, 251, 0.88);
+  line-height: 1.7;
+}
+
+.election-result-signals {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--space-10);
+}
+
+.election-result-signal {
+  padding: var(--space-12);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(20, 48, 81, 0.08);
+  box-shadow: var(--shadow-sm);
+}
+
+.election-result-signal__label {
+  display: block;
+  margin-bottom: var(--space-6);
+  font-size: var(--font-size-xs);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #6c8099;
+  font-weight: var(--font-weight-bold);
+}
+
+.election-result-signal strong {
+  display: block;
+  margin-bottom: var(--space-6);
+  color: #16314f;
+}
+
+.election-result-signal p {
+  margin: 0;
+  font-size: var(--font-size-sm);
+  line-height: 1.55;
+  color: #536781;
+}
+
+.election-result-signal--success {
+  border-color: rgba(23, 106, 81, 0.22);
+}
+
+.election-result-signal--warning {
+  border-color: rgba(185, 106, 25, 0.22);
+}
+
+.election-result-signal--error {
+  border-color: rgba(179, 39, 60, 0.22);
+}
+
+.election-result-sections {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+  gap: var(--space-16);
+  margin: var(--space-18) 0;
+}
+
+.election-result-section {
+  display: grid;
+  gap: var(--space-12);
+  padding: var(--space-14);
+  border-radius: 20px;
+  background: rgba(15, 37, 63, 0.04);
+  border: 1px solid rgba(20, 48, 81, 0.08);
+}
+
+.election-result-section__head,
+.election-scorecard-item__meta,
+.result-chronicle-entry__meta {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-10);
+}
+
+.election-result-section__head h3 {
+  margin: 0;
+  color: #16314f;
+}
+
+.election-result-scorecard {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-12);
+}
+
+.election-scorecard-item,
+.result-chronicle-entry {
+  padding: var(--space-12);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.88);
+  border: 1px solid rgba(20, 48, 81, 0.08);
+}
+
+.election-scorecard-item p,
+.result-chronicle-entry p {
+  margin: var(--space-8) 0 0;
+  color: #52657d;
+  font-size: var(--font-size-sm);
+  line-height: 1.6;
+}
+
+.election-scorecard-item--success,
+.result-chronicle-entry--success {
+  border-color: rgba(23, 106, 81, 0.18);
+}
+
+.election-scorecard-item--warning,
+.result-chronicle-entry--warning {
+  border-color: rgba(185, 106, 25, 0.22);
+}
+
+.election-scorecard-item--error,
+.result-chronicle-entry--error {
+  border-color: rgba(179, 39, 60, 0.22);
+}
+
+.election-result-chronicle {
+  display: grid;
+  gap: var(--space-10);
 }
 
 .event-response-summary {
@@ -1998,13 +2193,673 @@ select.form-control {
   box-shadow: none;
 }
 
+.app-container {
+  position: relative;
+  isolation: isolate;
+  background:
+    radial-gradient(circle at top left, rgba(38, 79, 120, 0.18), transparent 30%),
+    linear-gradient(180deg, rgba(8, 16, 27, 0.92), rgba(13, 23, 37, 0.84) 30%, rgba(246, 248, 252, 0.96) 30.1%);
+}
+
+.main-header h1,
+.title-screen__brand h2 {
+  font-family: var(--font-family-display);
+  letter-spacing: -0.03em;
+}
+
+.briefing-panel,
+.uk-map-container,
+.events-feed,
+.implementation-queue,
+.national-mood-panel,
+.narrative-panel,
+.tutorial-panel,
+.campaign-story-panel,
+.campaign-compass-panel,
+.campaign-timeline-panel,
+.campaign-priorities-panel,
+.battleground-panel,
+.voter-groups,
+.performance-metrics,
+.cabinet-info,
+.party-factions {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(246, 248, 252, 0.96));
+  border: 1px solid rgba(23, 49, 84, 0.12);
+  box-shadow: 0 18px 40px rgba(8, 18, 33, 0.08);
+}
+
+.briefing-focus-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-12);
+  margin: var(--space-16) 0 var(--space-12);
+}
+
+.briefing-focus-card {
+  padding: var(--space-12);
+  border-radius: 16px;
+  background:
+    linear-gradient(180deg, rgba(20, 48, 81, 0.06), rgba(20, 48, 81, 0.02));
+  border: 1px solid rgba(20, 48, 81, 0.08);
+}
+
+.briefing-focus-card strong {
+  display: block;
+  margin-top: var(--space-4);
+  color: #16304f;
+  font-size: var(--font-size-lg);
+}
+
+.briefing-focus-card p {
+  margin: var(--space-6) 0 0;
+  color: #5f6c7f;
+  font-size: var(--font-size-sm);
+}
+
+.briefing-highlights {
+  margin: 0 0 var(--space-16);
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: var(--space-8);
+}
+
+.briefing-highlights li {
+  padding: var(--space-10) var(--space-12);
+  border-radius: 14px;
+  background: rgba(11, 26, 45, 0.04);
+  border-left: 3px solid rgba(44, 95, 138, 0.65);
+  color: #223957;
+  font-size: var(--font-size-sm);
+}
+
+.tutorial-panel,
+.campaign-story-panel,
+.campaign-compass-panel,
+.campaign-timeline-panel,
+.campaign-priorities-panel,
+.battleground-panel,
+.party-factions {
+  padding: var(--space-16);
+}
+
+.tutorial-steps,
+.story-notes,
+.campaign-compass-list,
+.campaign-timeline-list,
+.campaign-priorities-list,
+.battleground-list,
+.faction-list {
+  display: grid;
+  gap: var(--space-10);
+}
+
+.tutorial-progress {
+  margin-bottom: var(--space-12);
+  padding: var(--space-12);
+  border-radius: 16px;
+  background: linear-gradient(180deg, rgba(20, 48, 81, 0.08), rgba(20, 48, 81, 0.03));
+  border: 1px solid rgba(20, 48, 81, 0.08);
+}
+
+.tutorial-progress__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-12);
+  margin-bottom: var(--space-8);
+}
+
+.tutorial-progress__head strong {
+  color: #173154;
+}
+
+.tutorial-progress__head span,
+.tutorial-progress p {
+  color: #617184;
+  font-size: var(--font-size-sm);
+}
+
+.tutorial-progress__bar {
+  height: 10px;
+  border-radius: 999px;
+  overflow: hidden;
+  background: rgba(20, 48, 81, 0.08);
+}
+
+.tutorial-progress__bar span {
+  display: block;
+  width: 0;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #1e3a5f, #2f8a6a);
+  transition: width var(--duration-normal) var(--ease-standard);
+}
+
+.tutorial-progress p {
+  margin: var(--space-8) 0 0;
+}
+
+.tutorial-step {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: var(--space-10);
+  align-items: start;
+  padding: var(--space-12);
+  border-radius: 16px;
+  background: rgba(10, 22, 38, 0.04);
+  border: 1px solid rgba(20, 48, 81, 0.08);
+}
+
+.tutorial-step__marker {
+  width: 26px;
+  height: 26px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  color: #16304f;
+  background: rgba(44, 95, 138, 0.14);
+}
+
+.tutorial-step--done .tutorial-step__marker {
+  background: rgba(22, 122, 88, 0.18);
+  color: #0d5d43;
+}
+
+.tutorial-step strong,
+.story-lead h3,
+.title-screen__hero-stat strong,
+.faction-item strong {
+  color: #173154;
+}
+
+.tutorial-step p,
+.story-lead p,
+.story-notes li,
+.campaign-compass-item p,
+.faction-item p,
+.help-bullet,
+#titleSaveSummary {
+  margin: 0;
+  color: #617184;
+  font-size: var(--font-size-sm);
+}
+
+.campaign-intelligence {
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  gap: var(--space-16);
+}
+
+.campaign-timeline-panel {
+  grid-column: 1 / -1;
+}
+
+.story-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-6);
+  padding: var(--space-4) var(--space-10);
+  border-radius: 999px;
+  background: rgba(200, 16, 46, 0.1);
+  color: #a10f28;
+  font-size: var(--font-size-xs);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.story-lead h3 {
+  margin: var(--space-10) 0 var(--space-8);
+  font-family: var(--font-family-display);
+  font-size: 1.8rem;
+  line-height: 1.15;
+}
+
+.story-notes {
+  padding: 0;
+  margin: var(--space-14) 0 0;
+  list-style: none;
+}
+
+.story-notes li,
+.campaign-compass-item,
+.faction-item,
+.election-result-notes .result-note {
+  padding: var(--space-12);
+  border-radius: 16px;
+  background: rgba(11, 26, 45, 0.04);
+  border: 1px solid rgba(20, 48, 81, 0.08);
+}
+
+.result-note--success {
+  border-color: rgba(23, 106, 81, 0.2);
+}
+
+.result-note--warning {
+  border-color: rgba(185, 106, 25, 0.22);
+}
+
+.result-note--error {
+  border-color: rgba(179, 39, 60, 0.22);
+}
+
+.campaign-compass-item strong,
+.faction-item strong,
+.election-result-notes strong {
+  display: block;
+  margin-bottom: var(--space-4);
+}
+
+.campaign-priority,
+.battleground-item {
+  padding: var(--space-12);
+  border-radius: 16px;
+  background: rgba(11, 26, 45, 0.04);
+  border: 1px solid rgba(20, 48, 81, 0.08);
+}
+
+.campaign-priority__head,
+.battleground-item__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-12);
+  margin-bottom: var(--space-8);
+}
+
+.campaign-priority__head strong,
+.battleground-item strong {
+  color: #173154;
+  display: block;
+}
+
+.campaign-priority p,
+.battleground-item p,
+.battleground-item__meta {
+  margin: 0;
+  color: #617184;
+  font-size: var(--font-size-sm);
+}
+
+.campaign-priority__action {
+  margin-top: var(--space-10);
+  padding-top: var(--space-10);
+  border-top: 1px dashed rgba(20, 48, 81, 0.12);
+  color: #26476f;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+}
+
+.campaign-priority--error,
+.battleground-item--error {
+  border-color: rgba(143, 33, 54, 0.22);
+  background: linear-gradient(180deg, rgba(255, 244, 246, 0.92), rgba(255, 249, 250, 0.96));
+}
+
+.campaign-priority--warning,
+.battleground-item--warning {
+  border-color: rgba(139, 91, 0, 0.2);
+  background: linear-gradient(180deg, rgba(255, 249, 239, 0.92), rgba(255, 252, 246, 0.96));
+}
+
+.campaign-priority--info,
+.battleground-item--info {
+  border-color: rgba(44, 95, 138, 0.18);
+  background: linear-gradient(180deg, rgba(241, 247, 253, 0.94), rgba(248, 250, 253, 0.98));
+}
+
+.campaign-priority--success,
+.battleground-item--success {
+  border-color: rgba(25, 102, 73, 0.18);
+  background: linear-gradient(180deg, rgba(241, 248, 245, 0.95), rgba(249, 252, 250, 0.98));
+}
+
+.pressure-fronts-list {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-12);
+}
+
+.pressure-front {
+  padding: var(--space-14);
+  border-radius: 18px;
+  background: rgba(11, 26, 45, 0.04);
+  border: 1px solid rgba(20, 48, 81, 0.08);
+}
+
+.pressure-front__head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: var(--space-12);
+  margin-bottom: var(--space-10);
+}
+
+.pressure-front__head strong {
+  display: block;
+  margin-top: var(--space-8);
+  color: #173154;
+}
+
+.pressure-front__value {
+  color: #1d4268;
+  font-weight: var(--font-weight-semibold);
+  font-size: var(--font-size-sm);
+  white-space: nowrap;
+}
+
+.pressure-front p {
+  margin: 0;
+  color: #617184;
+  font-size: var(--font-size-sm);
+  line-height: 1.6;
+}
+
+.pressure-front__action {
+  margin-top: var(--space-12);
+  padding-top: var(--space-10);
+  border-top: 1px dashed rgba(20, 48, 81, 0.12);
+  color: #26476f;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+}
+
+.pressure-front--error {
+  border-color: rgba(143, 33, 54, 0.22);
+  background: linear-gradient(180deg, rgba(255, 244, 246, 0.94), rgba(255, 249, 250, 0.98));
+}
+
+.pressure-front--warning {
+  border-color: rgba(139, 91, 0, 0.2);
+  background: linear-gradient(180deg, rgba(255, 249, 239, 0.94), rgba(255, 252, 246, 0.98));
+}
+
+.pressure-front--info {
+  border-color: rgba(44, 95, 138, 0.18);
+  background: linear-gradient(180deg, rgba(241, 247, 253, 0.95), rgba(248, 250, 253, 0.98));
+}
+
+.pressure-front--success {
+  border-color: rgba(25, 102, 73, 0.18);
+  background: linear-gradient(180deg, rgba(241, 248, 245, 0.95), rgba(249, 252, 250, 0.98));
+}
+
+.battleground-item__meta {
+  margin-bottom: var(--space-8);
+  font-weight: var(--font-weight-medium);
+}
+
+.campaign-timeline-item {
+  display: grid;
+  gap: var(--space-6);
+  padding: var(--space-14);
+  border-radius: 16px;
+  border: 1px solid rgba(20, 48, 81, 0.08);
+  background: rgba(255, 255, 255, 0.84);
+}
+
+.campaign-timeline-item__label {
+  font-size: var(--font-size-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #6c7f95;
+  font-weight: var(--font-weight-semibold);
+}
+
+.campaign-timeline-item--complete {
+  background: linear-gradient(180deg, rgba(235, 243, 252, 0.95), rgba(248, 250, 253, 0.92));
+  border-color: rgba(30, 58, 95, 0.16);
+}
+
+.campaign-timeline-item--live {
+  background: linear-gradient(180deg, rgba(255, 244, 238, 0.98), rgba(255, 249, 246, 0.95));
+  border-color: rgba(200, 16, 46, 0.2);
+  box-shadow: inset 0 0 0 1px rgba(200, 16, 46, 0.05);
+}
+
+.campaign-timeline-item--upcoming {
+  background: linear-gradient(180deg, rgba(252, 252, 252, 0.98), rgba(247, 249, 252, 0.94));
+}
+
+.party-factions .section-subtitle {
+  margin-bottom: var(--space-12);
+}
+
+.faction-item {
+  display: grid;
+  gap: var(--space-8);
+}
+
+.faction-item__head {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-12);
+  align-items: baseline;
+}
+
+.faction-item__bar {
+  height: 10px;
+  border-radius: 999px;
+  background: rgba(20, 48, 81, 0.08);
+  overflow: hidden;
+}
+
+.faction-item__bar span {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #214d7c, #3d8fb8);
+}
+
+.faction-item--warning .faction-item__bar span {
+  background: linear-gradient(90deg, #b96a19, #d89f2c);
+}
+
+.faction-item--error .faction-item__bar span {
+  background: linear-gradient(90deg, #b3273c, #d15865);
+}
+
+.faction-item--success .faction-item__bar span {
+  background: linear-gradient(90deg, #176a51, #2ca57a);
+}
+
+.policy-impact {
+  margin-top: var(--space-8);
+  font-size: var(--font-size-xs);
+  color: #63758d;
+}
+
+.policy-impact strong {
+  color: #193654;
+}
+
+.left-panel .policy-impact {
+  color: rgba(181, 197, 214, 0.78);
+}
+
+.left-panel .policy-impact strong {
+  color: rgba(236, 242, 248, 0.94);
+}
+
+.help-bullets,
+.election-result-notes {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-10);
+  margin: var(--space-16) 0;
+}
+
+.options-list {
+  display: grid;
+  gap: var(--space-14);
+  margin-top: var(--space-16);
+}
+
+.options-row,
+.options-slider {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-16);
+  padding: var(--space-12);
+  border-radius: 14px;
+  background: rgba(20, 48, 81, 0.05);
+}
+
+.event-choice__effects {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-6);
+  margin-top: var(--space-10);
+}
+
+.effect-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--space-4) var(--space-8);
+  border-radius: 999px;
+  background: rgba(17, 46, 80, 0.08);
+  color: #244361;
+  font-size: var(--font-size-xs);
+}
+
+.options-slider input[type="range"] {
+  width: 180px;
+}
+
+.title-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 1100;
+  display: grid;
+  place-items: center;
+  padding: var(--space-24);
+}
+
+.title-screen.hidden {
+  display: none;
+}
+
+.title-screen__backdrop {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at top left, rgba(58, 128, 187, 0.18), transparent 32%),
+    radial-gradient(circle at bottom right, rgba(200, 16, 46, 0.18), transparent 30%),
+    linear-gradient(135deg, rgba(8, 17, 31, 0.96), rgba(17, 33, 52, 0.94));
+}
+
+.title-screen__content {
+  position: relative;
+  width: min(1080px, 100%);
+  padding: clamp(24px, 5vw, 44px);
+  border-radius: 28px;
+  background:
+    linear-gradient(140deg, rgba(8, 17, 31, 0.94), rgba(17, 33, 52, 0.9)),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.04), transparent);
+  border: 1px solid rgba(122, 161, 201, 0.2);
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.35);
+  color: rgba(245, 248, 252, 0.94);
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  gap: var(--space-24);
+}
+
+.title-screen__eyebrow {
+  display: inline-flex;
+  margin-bottom: var(--space-12);
+  padding: var(--space-4) var(--space-10);
+  border-radius: 999px;
+  background: rgba(70, 129, 181, 0.18);
+  color: rgba(214, 231, 249, 0.92);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-size: var(--font-size-xs);
+}
+
+.title-screen__brand h2 {
+  color: white;
+  font-size: clamp(2.8rem, 6vw, 5rem);
+  margin-bottom: var(--space-12);
+}
+
+.title-screen__brand p {
+  max-width: 60ch;
+  color: rgba(220, 231, 244, 0.82);
+  font-size: 1rem;
+  line-height: 1.7;
+}
+
+.title-screen__hero {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-10);
+  margin-top: var(--space-20);
+}
+
+.title-screen__hero-stat,
+.title-screen__save {
+  padding: var(--space-12);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(133, 168, 203, 0.16);
+}
+
+.title-screen__hero-stat span {
+  display: block;
+  color: rgba(191, 208, 226, 0.8);
+  font-size: var(--font-size-xs);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.title-screen__hero-stat strong {
+  display: block;
+  margin-top: var(--space-6);
+  color: white;
+  font-size: 1.2rem;
+}
+
+.title-screen__menu {
+  display: grid;
+  align-content: start;
+  gap: var(--space-10);
+}
+
+.title-screen__menu .btn--outline {
+  color: rgba(232, 240, 248, 0.92);
+  border-color: rgba(145, 177, 209, 0.24);
+}
+
+.title-screen__save {
+  margin-top: var(--space-16);
+}
+
+body[data-reduced-motion="true"] *,
+body[data-reduced-motion="true"] *::before,
+body[data-reduced-motion="true"] *::after {
+  animation-duration: 1ms !important;
+  transition-duration: 1ms !important;
+  scroll-behavior: auto !important;
+}
+
 /* Responsive Design */
 @media (max-width: 1200px) {
   .main-content {
     grid-template-columns: 300px 1fr 280px;
   }
 
+  .campaign-intelligence,
+  .title-screen__content {
+    grid-template-columns: 1fr;
+  }
+
   .strategy-dashboard,
+  .operations-dashboard,
   .mood-dashboard {
     grid-template-columns: 1fr;
   }
@@ -2053,8 +2908,16 @@ select.form-control {
   .campaign-tags,
   .briefing-header,
   .briefing-actions,
-  .section-header {
+  .section-header,
+  .tutorial-progress__head,
+  .campaign-priority__head,
+  .battleground-item__head {
     flex-direction: column;
+  }
+
+  .briefing-focus-grid,
+  .title-screen__hero {
+    grid-template-columns: 1fr;
   }
 
   .event-choice__head,
@@ -2068,10 +2931,32 @@ select.form-control {
     grid-template-columns: 1fr;
   }
 
+  .election-result-sections,
+  .election-result-scorecard,
+  .pressure-fronts-list {
+    grid-template-columns: 1fr;
+  }
+
   .poll-row,
   .agenda-head,
   .ledger-meta {
     flex-direction: column;
+  }
+
+  .election-result-section__head,
+  .election-scorecard-item__meta,
+  .result-chronicle-entry__meta,
+  .pressure-front__head {
+    flex-direction: column;
+  }
+
+  .election-result-signals,
+  .election-result-notes {
+    grid-template-columns: 1fr;
+  }
+
+  .title-screen__content {
+    padding: var(--space-20);
   }
 }
 
