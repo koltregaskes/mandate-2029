@@ -956,6 +956,17 @@ select.form-control {
     linear-gradient(145deg, rgba(30, 58, 95, 0.04), rgba(44, 95, 138, 0.08));
 }
 
+.briefing-banner {
+  height: 150px;
+  margin-bottom: var(--space-16);
+  border-radius: 16px;
+  background:
+    linear-gradient(180deg, rgba(8, 16, 30, 0.05), rgba(8, 16, 30, 0.34)),
+    url('assets/img/cabinet-room.jpg') center 58% / cover no-repeat;
+  border: 1px solid rgba(30, 58, 95, 0.16);
+  box-shadow: inset 0 -34px 44px -22px rgba(8, 16, 30, 0.5);
+}
+
 .briefing-header {
   display: flex;
   align-items: flex-start;
@@ -1376,8 +1387,10 @@ select.form-control {
   border-radius: calc(var(--radius-lg) + 4px);
   border: 1px solid rgba(30, 58, 95, 0.14);
   background:
-    radial-gradient(circle at 20% 18%, rgba(120, 186, 255, 0.18), transparent 24%),
-    radial-gradient(circle at 78% 78%, rgba(235, 244, 255, 0.18), transparent 22%),
+    radial-gradient(circle at 20% 18%, rgba(120, 186, 255, 0.16), transparent 24%),
+    radial-gradient(circle at 78% 78%, rgba(235, 244, 255, 0.16), transparent 22%),
+    linear-gradient(155deg, rgba(8, 22, 40, 0.5), rgba(22, 58, 92, 0.42)),
+    url('assets/img/uk-map.jpg') center / contain no-repeat,
     linear-gradient(155deg, rgba(8, 22, 40, 0.96), rgba(22, 58, 92, 0.82));
   overflow: hidden;
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06), var(--shadow-md);
@@ -1391,9 +1404,7 @@ select.form-control {
 }
 
 .uk-map__silhouette {
-  fill: rgba(120, 186, 255, 0.18);
-  stroke: rgba(188, 220, 255, 0.34);
-  stroke-width: 2;
+  display: none;
 }
 
 .uk-map__silhouette--inner {
@@ -1844,6 +1855,21 @@ select.form-control {
 
 .modal-card--wide {
   width: min(760px, 100%);
+}
+
+#eventModal .modal-card {
+  overflow: hidden;
+}
+
+#eventModal .modal-card::before {
+  content: "";
+  display: block;
+  height: 168px;
+  margin: calc(-1 * var(--space-24)) calc(-1 * var(--space-24)) var(--space-20);
+  background:
+    linear-gradient(180deg, rgba(8, 16, 30, 0.12), rgba(8, 16, 30, 0.5)),
+    url('assets/img/event-backdrop.jpg') center 42% / cover no-repeat;
+  border-bottom: 1px solid rgba(30, 58, 95, 0.16);
 }
 
 .modal-card--election {
@@ -2748,9 +2774,10 @@ select.form-control {
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(circle at top left, rgba(58, 128, 187, 0.18), transparent 32%),
-    radial-gradient(circle at bottom right, rgba(200, 16, 46, 0.18), transparent 30%),
-    linear-gradient(135deg, rgba(8, 17, 31, 0.96), rgba(17, 33, 52, 0.94));
+    radial-gradient(circle at top left, rgba(58, 128, 187, 0.22), transparent 36%),
+    radial-gradient(circle at bottom right, rgba(200, 16, 46, 0.22), transparent 34%),
+    linear-gradient(160deg, rgba(8, 17, 31, 0.72), rgba(10, 20, 36, 0.6) 45%, rgba(8, 16, 30, 0.88)),
+    url('assets/img/title-hero.jpg') center 28% / cover no-repeat;
 }
 
 .title-screen__content {

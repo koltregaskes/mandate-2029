@@ -182,7 +182,10 @@ class UKDemocracySimulator {
             musicNodes: [],
             musicPulseTimer: null,
             lastEventCueId: null,
-            lastElectionCueKey: null
+            lastElectionCueKey: null,
+            bed: null,
+            vo: null,
+            voPlayed: false
         };
         this.scenarioSelection = {
             scenarioId: this.reviewMode ? this.reviewScenarioId : this.defaultScenarioId,
@@ -2447,7 +2450,13 @@ class UKDemocracySimulator {
         this.updateDisplay();
         this.syncOptionsControls();
 
-        window.addEventListener('pointerdown', () => this.unlockAudio(), { once: true });
+        window.addEventListener('pointerdown', () => {
+            this.unlockAudio();
+            if (this.settings.musicEnabled) {
+                this.playMusicBed();
+                this.playTitleVo();
+            }
+        }, { once: true });
 
         if (!this.debugAutoStart) {
             this.openTitleScreen();
@@ -5368,6 +5377,8 @@ class UKDemocracySimulator {
         if (this.audio.master && this.audio.context) {
             this.audio.master.gain.setTargetAtTime(this.settings.masterVolume, this.audio.context.currentTime, 0.05);
         }
+        if (this.audio.bed) this.audio.bed.volume = Math.min(1, this.settings.masterVolume * 0.6);
+        if (this.audio.vo) this.audio.vo.volume = Math.min(1, this.settings.masterVolume * 1.3);
         if (!this.settings.musicEnabled) {
             this.stopMusic();
         }
@@ -5414,43 +5425,38 @@ class UKDemocracySimulator {
     startMusic() {
         if (!this.settings.musicEnabled) return;
         this.unlockAudio();
-        if (!this.audio.context || this.audio.musicNodes.length) return;
+        this.playMusicBed();
+    }
 
-        const context = this.audio.context;
-        const filter = context.createBiquadFilter();
-        filter.type = 'lowpass';
-        filter.frequency.value = 620;
-        filter.Q.value = 0.7;
-        filter.connect(this.audio.musicGain);
+    playMusicBed() {
+        if (!this.settings.musicEnabled) return;
+        if (!this.audio.bed) {
+            const bed = new Audio('assets/audio/music-bed.mp3');
+            bed.loop = true;
+            bed.preload = 'auto';
+            this.audio.bed = bed;
+        }
+        this.audio.bed.volume = Math.min(1, this.settings.masterVolume * 0.6);
+        const playPromise = this.audio.bed.play();
+        if (playPromise && typeof playPromise.catch === 'function') {
+            playPromise.catch(() => {});
+        }
+    }
 
-        const bedGain = context.createGain();
-        bedGain.gain.value = 0.22;
-        bedGain.connect(filter);
-
-        const droneA = context.createOscillator();
-        droneA.type = 'triangle';
-        droneA.frequency.value = 130.81;
-        droneA.connect(bedGain);
-
-        const droneB = context.createOscillator();
-        droneB.type = 'sine';
-        droneB.frequency.value = 196;
-        droneB.connect(bedGain);
-
-        const droneC = context.createOscillator();
-        droneC.type = 'sine';
-        droneC.frequency.value = 261.63;
-        const droneCGain = context.createGain();
-        droneCGain.gain.value = 0.07;
-        droneC.connect(droneCGain);
-        droneCGain.connect(filter);
-
-        droneA.start();
-        droneB.start();
-        droneC.start();
-
-        this.audio.musicNodes = [droneA, droneB, droneC, filter, bedGain, droneCGain];
-        this.audio.musicPulseTimer = window.setInterval(() => this.playMusicPulse(), 9000);
+    playTitleVo() {
+        if (!this.settings.musicEnabled || this.audio.voPlayed) return;
+        const title = document.getElementById('titleScreen');
+        if (title && title.classList.contains('hidden')) return;
+        if (!this.audio.vo) {
+            this.audio.vo = new Audio('assets/audio/title-vo.mp3');
+            this.audio.vo.preload = 'auto';
+        }
+        this.audio.vo.volume = Math.min(1, this.settings.masterVolume * 1.3);
+        this.audio.voPlayed = true;
+        const playPromise = this.audio.vo.play();
+        if (playPromise && typeof playPromise.catch === 'function') {
+            playPromise.catch(() => { this.audio.voPlayed = false; });
+        }
     }
 
     stopMusic() {
@@ -5471,6 +5477,9 @@ class UKDemocracySimulator {
             }
         });
         this.audio.musicNodes = [];
+        if (this.audio.bed) {
+            try { this.audio.bed.pause(); } catch {}
+        }
     }
 
     playMusicPulse() {
