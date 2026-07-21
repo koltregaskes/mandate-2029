@@ -4585,14 +4585,31 @@ class UKDemocracySimulator {
         document.querySelector('.pm-name').textContent = this.gameState.pmName;
         document.querySelector('.party-info').textContent = this.gameState.partyInfo;
 
-        Object.entries(this.gameState.voterApproval).forEach(([group, approval]) => {
-            const groupElement = Array.from(document.querySelectorAll('.voter-group')).find((element) => {
+        // Cache the voter-group rows once; this used to re-scan every .voter-group
+        // (and its .group-name) for every approval entry, on every turn.
+        if (!this.voterGroupRefs || !this.voterGroupRefs.size) {
+            this.voterGroupRefs = new Map();
+            document.querySelectorAll('.voter-group').forEach((element) => {
                 const label = element.querySelector('.group-name');
-                return label && label.textContent.includes(group);
+                if (!label) return;
+                this.voterGroupRefs.set(label.textContent.trim(), {
+                    fill: element.querySelector('.approval-fill'),
+                    text: element.querySelector('.approval-text')
+                });
             });
-            if (!groupElement) return;
-            groupElement.querySelector('.approval-fill').style.width = `${approval}%`;
-            groupElement.querySelector('.approval-text').textContent = `${Math.round(approval)}%`;
+        }
+
+        Object.entries(this.gameState.voterApproval).forEach(([group, approval]) => {
+            let refs = this.voterGroupRefs.get(group);
+            if (!refs) {
+                // labels may carry extra copy around the group name
+                for (const [label, candidate] of this.voterGroupRefs) {
+                    if (label.includes(group)) { refs = candidate; break; }
+                }
+            }
+            if (!refs) return;
+            refs.fill.style.width = `${approval}%`;
+            refs.text.textContent = `${Math.round(approval)}%`;
         });
 
         this.updateRegionalMapDisplay();
@@ -4686,59 +4703,104 @@ class UKDemocracySimulator {
             return worst;
         }, null);
 
-        map.innerHTML = `
-            <svg class="uk-map__frame" viewBox="0 0 420 320" role="img" aria-label="Stylised map of Britain showing regional government support">
-                <defs>
-                    <linearGradient id="mapGlow" x1="0%" x2="100%" y1="0%" y2="100%">
-                        <stop offset="0%" stop-color="rgba(8, 22, 40, 0.95)"></stop>
-                        <stop offset="100%" stop-color="rgba(22, 58, 92, 0.72)"></stop>
-                    </linearGradient>
-                </defs>
-                <path class="uk-map__silhouette" d="M130 18 C100 24 84 48 92 79 C78 97 74 121 94 142 C87 166 98 189 122 206 C127 231 145 253 170 261 C192 281 219 290 246 279 C270 290 294 279 309 256 C332 247 347 225 349 198 C362 176 359 152 343 132 C350 108 343 85 323 70 C317 45 298 28 273 24 C243 12 214 11 188 22 C168 14 149 14 130 18 Z"></path>
-                <path class="uk-map__silhouette uk-map__silhouette--inner" d="M141 42 C118 48 107 69 113 92 C102 106 100 124 114 141 C109 158 117 177 135 190 C142 211 156 226 177 232 C194 249 216 255 237 247 C257 255 279 248 292 229 C311 222 324 206 325 185 C336 169 333 150 320 136 C325 117 319 98 302 86 C297 67 281 54 262 50 C236 40 214 40 192 48 C174 40 156 38 141 42 Z"></path>
-            </svg>
-            ${regions.map((region) => {
-                const support = Math.round(this.gameState.regionalSupport[region.key]);
-                const seats = this.getRegionalSeatEstimate(region.key, support);
-                const tone = this.getRegionTone(support);
-                const pulse = 44 + Math.round((support - 15) * 0.55);
-                return `
+        // The map shell (SVG silhouette) and the node/list buttons never change
+        // shape, only their numbers - so build them once and mutate in place.
+        // Region clicks are delegated from [data-region], so reusing the button
+        // elements keeps the handlers working without rebinding.
+        if (!this.regionalMapRefs || !this.regionalMapRefs.strongest.isConnected) {
+            map.innerHTML = `
+                <svg class="uk-map__frame" viewBox="0 0 420 320" role="img" aria-label="Stylised map of Britain showing regional government support">
+                    <defs>
+                        <linearGradient id="mapGlow" x1="0%" x2="100%" y1="0%" y2="100%">
+                            <stop offset="0%" stop-color="rgba(8, 22, 40, 0.95)"></stop>
+                            <stop offset="100%" stop-color="rgba(22, 58, 92, 0.72)"></stop>
+                        </linearGradient>
+                    </defs>
+                    <path class="uk-map__silhouette" d="M130 18 C100 24 84 48 92 79 C78 97 74 121 94 142 C87 166 98 189 122 206 C127 231 145 253 170 261 C192 281 219 290 246 279 C270 290 294 279 309 256 C332 247 347 225 349 198 C362 176 359 152 343 132 C350 108 343 85 323 70 C317 45 298 28 273 24 C243 12 214 11 188 22 C168 14 149 14 130 18 Z"></path>
+                    <path class="uk-map__silhouette uk-map__silhouette--inner" d="M141 42 C118 48 107 69 113 92 C102 106 100 124 114 141 C109 158 117 177 135 190 C142 211 156 226 177 232 C194 249 216 255 237 247 C257 255 279 248 292 229 C311 222 324 206 325 185 C336 169 333 150 320 136 C325 117 319 98 302 86 C297 67 281 54 262 50 C236 40 214 40 192 48 C174 40 156 38 141 42 Z"></path>
+                </svg>
+                ${regions.map((region) => `
                     <button
                         type="button"
-                        class="region-node region-node--${tone}"
+                        class="region-node"
                         data-region="${region.key}"
-                        style="left:${region.x}%; top:${region.y}%; width:${pulse}px; height:${pulse}px;"
+                        style="left:${region.x}%; top:${region.y}%;"
                     >
                         <span class="region-node__name">${region.short}</span>
-                        <span class="region-node__value">${support}%</span>
-                        <span class="region-node__seats">${seats} seats</span>
+                        <span class="region-node__value"></span>
+                        <span class="region-node__seats"></span>
                     </button>
-                `;
-            }).join('')}
-            <div class="uk-map__caption">
-                <span>Strongest region: ${strongest.region} (${Math.round(strongest.support)}%)</span>
-                <span>Weakest region: ${weakest.region} (${Math.round(weakest.support)}%)</span>
-            </div>
-        `;
+                `).join('')}
+                <div class="uk-map__caption">
+                    <span data-caption="strongest"></span>
+                    <span data-caption="weakest"></span>
+                </div>
+            `;
 
-        list.innerHTML = regions.map((region) => {
+            list.innerHTML = regions.map((region) => `
+                <button type="button" class="regional-list-item" data-region="${region.key}">
+                    <div class="regional-list-item__head">
+                        <strong>${region.label}</strong>
+                        <span data-field="support"></span>
+                    </div>
+                    <div class="regional-list-item__bar"><span></span></div>
+                    <div class="regional-list-item__meta">
+                        <span data-field="seats"></span>
+                        <span data-field="tone"></span>
+                    </div>
+                </button>
+            `).join('');
+
+            this.regionalMapRefs = {
+                nodes: new Map(regions.map((region) => {
+                    const node = map.querySelector(`.region-node[data-region="${region.key}"]`);
+                    return [region.key, {
+                        node,
+                        value: node.querySelector('.region-node__value'),
+                        seats: node.querySelector('.region-node__seats')
+                    }];
+                })),
+                rows: new Map(regions.map((region) => {
+                    const row = list.querySelector(`.regional-list-item[data-region="${region.key}"]`);
+                    return [region.key, {
+                        row,
+                        support: row.querySelector('[data-field="support"]'),
+                        bar: row.querySelector('.regional-list-item__bar span'),
+                        seats: row.querySelector('[data-field="seats"]'),
+                        tone: row.querySelector('[data-field="tone"]')
+                    }];
+                })),
+                strongest: map.querySelector('[data-caption="strongest"]'),
+                weakest: map.querySelector('[data-caption="weakest"]')
+            };
+        }
+
+        const refs = this.regionalMapRefs;
+        const toneLabels = { success: 'Strong', info: 'Competitive', warning: 'Soft' };
+
+        regions.forEach((region) => {
             const support = Math.round(this.gameState.regionalSupport[region.key]);
             const seats = this.getRegionalSeatEstimate(region.key, support);
             const tone = this.getRegionTone(support);
-            return `
-                <button type="button" class="regional-list-item regional-list-item--${tone}" data-region="${region.key}">
-                    <div class="regional-list-item__head">
-                        <strong>${region.label}</strong>
-                        <span>${support}%</span>
-                    </div>
-                    <div class="regional-list-item__bar"><span style="width:${support}%"></span></div>
-                    <div class="regional-list-item__meta">
-                        <span>${seats} projected seats</span>
-                        <span>${tone === 'success' ? 'Strong' : tone === 'info' ? 'Competitive' : tone === 'warning' ? 'Soft' : 'Fragile'}</span>
-                    </div>
-                </button>
-            `;
-        }).join('');
+            const pulse = 44 + Math.round((support - 15) * 0.55);
+
+            const nodeRef = refs.nodes.get(region.key);
+            nodeRef.node.className = `region-node region-node--${tone}`;
+            nodeRef.node.style.width = `${pulse}px`;
+            nodeRef.node.style.height = `${pulse}px`;
+            nodeRef.value.textContent = `${support}%`;
+            nodeRef.seats.textContent = `${seats} seats`;
+
+            const rowRef = refs.rows.get(region.key);
+            rowRef.row.className = `regional-list-item regional-list-item--${tone}`;
+            rowRef.support.textContent = `${support}%`;
+            rowRef.bar.style.width = `${support}%`;
+            rowRef.seats.textContent = `${seats} projected seats`;
+            rowRef.tone.textContent = toneLabels[tone] || 'Fragile';
+        });
+
+        refs.strongest.textContent = `Strongest region: ${strongest.region} (${Math.round(strongest.support)}%)`;
+        refs.weakest.textContent = `Weakest region: ${weakest.region} (${Math.round(weakest.support)}%)`;
     }
 
     updateAgendaDisplay() {
