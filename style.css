@@ -1742,6 +1742,11 @@ select.form-control {
   display: flex;
   flex-direction: column;
   gap: var(--space-2);
+  align-items: flex-start;
+}
+
+.minister-brief {
+  margin-top: var(--space-4);
 }
 
 .minister-meta {

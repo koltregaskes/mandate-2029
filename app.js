@@ -1958,6 +1958,7 @@ class UKDemocracySimulator {
             turnNumber: 1,
             emergencyPowers: false,
             confidenceWarnings: 0,
+            cabinetBriefingTurn: 0,
             electionResolved: false,
             electionResult: null,
             pendingEvent: null,
@@ -4332,6 +4333,58 @@ class UKDemocracySimulator {
         return false;
     }
 
+    cabinetBriefingOutcome(loyalty) {
+        if (loyalty < 50) return { gain: 16, stability: 1, tone: 'success' };
+        if (loyalty < 70) return { gain: 8, stability: 0, tone: 'info' };
+        return { gain: 3, stability: -1, tone: 'warning' };
+    }
+
+    holdCabinetBriefing(portfolio) {
+        if (this.gameState.electionResolved) {
+            this.showMessage('The election is over. A briefing will not change the result.', 'info');
+            return;
+        }
+        if (this.gameState.pendingEvent) {
+            this.showMessage('Settle the live crisis before you call a minister in.', 'warning');
+            return;
+        }
+        if (this.gameState.cabinetBriefingTurn === this.gameState.turnNumber) {
+            this.showMessage('You have already used this month\'s private briefing.', 'info');
+            return;
+        }
+        const minister = this.gameState.cabinet[portfolio];
+        if (!minister) return;
+        const cost = 8;
+        if (this.gameState.politicalCapital < cost) {
+            this.showMessage('Not enough political capital for a private briefing.', 'error');
+            return;
+        }
+
+        const outcome = this.cabinetBriefingOutcome(minister.loyalty);
+        this.gameState.politicalCapital -= cost;
+        this.gameState.cabinetBriefingTurn = this.gameState.turnNumber;
+        minister.loyalty = this.clamp(minister.loyalty + outcome.gain, 0, 100);
+        this.gameState.governmentStability = this.clamp(
+            this.gameState.governmentStability + outcome.stability,
+            0,
+            100
+        );
+        const detail = outcome.stability > 0
+            ? `${minister.name} left the room quieter. Spending capital on a restless minister bought a little parliamentary calm.`
+            : outcome.stability < 0
+                ? `The meeting with ${minister.name} looked like favouritism. Loyal ministers barely moved, and the rest of the table noticed.`
+                : `${minister.name} took the briefing seriously. Loyalty improved, and the rest of the cabinet treated it as ordinary management.`;
+        this.logLedgerEntry('Cabinet briefing', detail, outcome.tone === 'warning' ? 'warning' : 'success');
+        this.showMessage(
+            outcome.stability < 0
+                ? `${minister.name} was already steady. The briefing cost more authority than it bought.`
+                : `${minister.name} is closer to the line. Loyalty ${Math.round(minister.loyalty)}.`,
+            outcome.tone
+        );
+        this.updateDisplay();
+        this.saveGame(false);
+    }
+
     handleCabinetPressure() {
         const weakest = Object.entries(this.gameState.cabinet).sort((a, b) => a[1].loyalty - b[1].loyalty)[0];
         if (!weakest) return;
@@ -5125,7 +5178,12 @@ class UKDemocracySimulator {
         const list = document.getElementById('cabinetList');
         if (!list) return;
         list.innerHTML = '';
-        Object.values(this.gameState.cabinet).forEach((minister) => {
+        const used = this.gameState.cabinetBriefingTurn === this.gameState.turnNumber;
+        const blocked = used
+            || this.gameState.electionResolved
+            || Boolean(this.gameState.pendingEvent)
+            || this.gameState.politicalCapital < 8;
+        Object.entries(this.gameState.cabinet).forEach(([portfolio, minister]) => {
             const tone = this.getCabinetTone(minister.loyalty);
             const item = document.createElement('div');
             item.className = 'minister-item';
@@ -5133,12 +5191,17 @@ class UKDemocracySimulator {
                 <div class="minister-copy">
                     <span class="minister-name">${minister.name}</span>
                     <span class="minister-role">${minister.role}</span>
+                    <button type="button" class="btn btn--outline btn--sm minister-brief" ${blocked ? 'disabled' : ''}>
+                        ${used ? 'Briefed' : 'Private briefing'}
+                    </button>
                 </div>
                 <div class="minister-meta">
                     <span class="minister-score">${Math.round(minister.loyalty)}</span>
                     <span class="minister-loyalty status status--${tone}">${this.describeCabinetLoyalty(minister.loyalty)}</span>
                 </div>
             `;
+            const button = item.querySelector('button');
+            button.addEventListener('click', () => this.holdCabinetBriefing(portfolio));
             list.appendChild(item);
         });
     }

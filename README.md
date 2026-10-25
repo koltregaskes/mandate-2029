@@ -21,6 +21,7 @@ python -m http.server 8011
 - Press `Next Turn` to advance one month.
 - Watch approval, government stability, implementation queue, and election outlook.
 - Use the regional swingboard to spot strongholds, vulnerable territory, and rough seat paths.
+- Spend one private cabinet briefing a month to pull a restless minister back into line.
 - Save progress locally or reset for a fresh government at any time.
 
 ## Controls
