@@ -1835,11 +1835,21 @@ select.form-control {
   inset: 0;
   background: rgba(9, 15, 28, 0.7);
   display: flex;
-  align-items: center;
+  /* Cards centre with auto margins, so a card taller than the screen (the
+     election result is ~1,430px) starts at the top and the overlay scrolls,
+     instead of clipping its title and the "Choose New Government" button. */
+  align-items: flex-start;
   justify-content: center;
+  overflow-y: auto;
+  overscroll-behavior: contain;
   padding: var(--space-24);
   z-index: 1200;
   backdrop-filter: blur(6px);
+}
+
+.modal-overlay > .modal-card {
+  margin: auto;
+  flex-shrink: 0;
 }
 
 .modal-overlay.hidden {
