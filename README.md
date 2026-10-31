@@ -38,3 +38,7 @@ python -m http.server 8011
 - Election result review state: `http://localhost:8011/?autostart=1&review=1&state=result`
 
 Review mode intentionally ignores local save load/write behavior so captures always land in the same curated slice.
+
+## Play-proofs
+
+- `node scripts/playproof-confidence-collapse.mjs` plays the real UI headless as a careless government (services cut, the most damaging crisis answer every time) on Nightmare. It passes when the term ends early on "Vote of No Confidence" and "Choose New Government" starts a fresh, playable term. Math.random is seeded, and files are served through Playwright request routing, so no port is opened. Flags: `--difficulty`, `--scenario`, `--seeds`, `--policy`, `--choices`.
