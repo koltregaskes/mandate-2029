@@ -38,3 +38,5 @@ python -m http.server 8011
 - Election result review state: `http://localhost:8011/?autostart=1&review=1&state=result`
 
 Review mode intentionally ignores local save load/write behavior so captures always land in the same curated slice.
+
+Review routes only work on a local build (`localhost`, `127.0.0.1`, `::1`, `*.localhost` or `file://`). On the hosted site, `?review=1&state=...` is ignored and the game starts normally, so players cannot skip governing. To use a review route on the hosted site for testing, run `localStorage.setItem('mandate-2029-dev-review', '1')` in the browser console, then reload. Check the gate with `node scripts/test-review-gate.mjs` (it needs Playwright; set `PLAYWRIGHT_PREFIX` if Playwright is installed elsewhere).

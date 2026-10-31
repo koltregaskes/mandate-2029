@@ -1,4 +1,26 @@
 class UKDemocracySimulator {
+    static reviewDevFlagKey = 'mandate-2029-dev-review';
+
+    // True on a local build (file://, localhost, 127.0.0.1, ::1, *.localhost)
+    // or when localStorage['mandate-2029-dev-review'] === '1' has been set by
+    // hand in this browser. Public players on the hosted site get normal play.
+    static reviewAllowed(location = window.location) {
+        const host = String(location.hostname || '').toLowerCase();
+        const localBuild = location.protocol === 'file:'
+            || host === ''
+            || host === 'localhost'
+            || host === '127.0.0.1'
+            || host === '::1'
+            || host === '[::1]'
+            || host.endsWith('.localhost');
+        if (localBuild) return true;
+        try {
+            return window.localStorage.getItem(UKDemocracySimulator.reviewDevFlagKey) === '1';
+        } catch (error) {
+            return false;
+        }
+    }
+
     constructor() {
         this.storageKey = 'mandate-2029-state-v5';
         this.legacyStorageKeys = [
@@ -14,7 +36,10 @@ class UKDemocracySimulator {
         this.defaultScenarioId = 'long-campaign';
         this.query = new URLSearchParams(window.location.search);
         this.debugAutoStart = this.query.get('autostart') === '1';
-        this.reviewMode = this.query.get('review') === '1';
+        // Review presets (?review=1&state=...) jump straight to curated slices,
+        // including the election result. They are a testing aid, so they only
+        // apply on a local build or when the dev flag is set in this browser.
+        this.reviewMode = this.query.get('review') === '1' && UKDemocracySimulator.reviewAllowed();
         this.reviewScenarioId = this.query.get('scenario') || this.defaultScenarioId;
         this.reviewDifficulty = this.query.get('difficulty') || 'normal';
         this.reviewState = ['event', 'run-in', 'result'].includes(this.query.get('state'))
