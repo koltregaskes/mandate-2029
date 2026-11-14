@@ -24,6 +24,19 @@ python -m http.server 8011
 - Spend one private cabinet briefing a month to pull a restless minister back into line.
 - Save progress locally or reset for a fresh government at any time.
 
+## How to finish
+
+The term ends on election day. It can also end early if repeated low-approval warnings bring the government down in a vote of no confidence.
+
+On election night the seat result is the verdict:
+
+- 326 seats or more is a majority, and the government wins outright.
+- 290 to 325 seats is a minority government. You are still in office.
+- 221 to 289 seats is a hung parliament.
+- 220 seats or fewer is a defeat.
+
+Choose New Government on the result starts a new term. That button stays on screen even when the result is taller than the window.
+
 ## Controls
 
 - Mouse or touch: change policies and trigger actions

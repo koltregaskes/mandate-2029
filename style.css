@@ -1835,11 +1835,12 @@ select.form-control {
   inset: 0;
   background: rgba(9, 15, 28, 0.7);
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
-  padding: var(--space-24);
+  padding: max(16px, var(--space-24));
   z-index: 1200;
   backdrop-filter: blur(6px);
+  overflow: auto;
 }
 
 .modal-overlay.hidden {
@@ -1848,6 +1849,10 @@ select.form-control {
 
 .modal-card {
   width: min(560px, 100%);
+  max-height: calc(100dvh - 32px);
+  overflow: auto;
+  margin-top: auto;
+  margin-bottom: auto;
   background:
     radial-gradient(circle at top right, rgba(200, 16, 46, 0.12), transparent 28%),
     linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(245, 247, 250, 0.96));
@@ -1863,7 +1868,7 @@ select.form-control {
 }
 
 #eventModal .modal-card {
-  overflow: hidden;
+  overflow: auto;
 }
 
 #eventModal .modal-card::before {
@@ -1879,6 +1884,14 @@ select.form-control {
 
 .modal-card--election {
   width: min(980px, 100%);
+}
+
+#electionModal #restartGameBtn {
+  position: sticky;
+  bottom: 0;
+  z-index: 2;
+  width: 100%;
+  margin-top: var(--space-16);
 }
 
 .modal-card--election[data-result-tone="success"] {
