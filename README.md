@@ -4,11 +4,15 @@ Narrative-heavy political strategy prototype about governing Britain through cri
 
 ## Run locally
 
-Start a static server in this folder, then open `http://localhost:8011`.
+With Node.js 18 or later installed, run this one command from a fresh clone:
 
 ```bash
-python -m http.server 8011
+npm start
 ```
+
+Then open `http://127.0.0.1:8011/`. No Python, npm install, downloaded assets or additional packages are needed. This uses the existing loopback-only review launcher on its existing port; it does not open a browser automatically. Stop it with Ctrl+C.
+
+For a socket-free launcher check, run `npm test`.
 
 ## How to play
 
